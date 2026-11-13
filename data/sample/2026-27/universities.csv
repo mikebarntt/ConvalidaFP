@@ -1,0 +1,4 @@
+university_id,name,short_name,ownership,region,website_url
+UEJ,Universidad de Ejemplo,UEJ,PUBLICA,Comunidad de Ejemplo,https://uej.example/
+UPR,Universidad de Prueba,UPR,PUBLICA,Comunidad de Ejemplo,https://upr.example/
+UFI,"Universidad Ficticia de Tecnología ""San Ejemplo"", Campus Norte",UFI,PRIVADA,Comunidad de Ejemplo,

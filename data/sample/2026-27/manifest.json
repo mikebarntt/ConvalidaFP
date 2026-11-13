@@ -1,0 +1,43 @@
+{
+  "academic_year": "2026-27",
+  "date": "2026-11-13",
+  "reviewer": "Revisor Ficticio",
+  "files": [
+    {
+      "name": "universities.csv",
+      "sha256": "63104e1f91b596ca097d2d478f4d4d75074a03a86110a2569bf5795187806bb3"
+    },
+    {
+      "name": "fp_cycles.csv",
+      "sha256": "da93b54356cadfdd0b82d7c6bbd3f5789bb0d9c2aa8af0b3ba45864359cb85a5"
+    },
+    {
+      "name": "fp_modules.csv",
+      "sha256": "96d54747c4b08a214918094024f72cc0a8f76528fb281c3af914d32a679aeb09"
+    },
+    {
+      "name": "degrees.csv",
+      "sha256": "55ace2120038037c1638ad55b3f70373c297fe6829fcaca18f727b227b5bc11a"
+    },
+    {
+      "name": "degree_subjects.csv",
+      "sha256": "b3ec6a464f9b7306477336014ba008e9a2bfcbde0f0f5693975b1d73b9274473"
+    },
+    {
+      "name": "source_documents.csv",
+      "sha256": "9bf44fa75f047e4c75852bd85fc107a90dcd27d2a4f76ae5b81950dbba815c1c"
+    },
+    {
+      "name": "recognition_tables.csv",
+      "sha256": "b3bd0b73dc407065918f281e3b7a1dc12be0d8cfe16dff69433df492a947d97d"
+    },
+    {
+      "name": "recognition_rules.csv",
+      "sha256": "7fcec53109362e60f4c6b3a154f986189462c511e66a6a7754f2e6ca998249b2"
+    },
+    {
+      "name": "rule_requirements.csv",
+      "sha256": "ccbc31b6d3501d3779c4dd621aa504c67b059874844f60a7993c98ecce1333a8"
+    }
+  ]
+}

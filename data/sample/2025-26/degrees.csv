@@ -1,0 +1,2 @@
+degree_id,university_id,name,degree_type,center,total_ects,plan_code,url
+UEJ-GP,UEJ,Grado de Prueba en Informática Ficticia,SIMPLE,Escuela de Ejemplo,240,PLAN-EJ-2020,https://uej.example/grados/prueba

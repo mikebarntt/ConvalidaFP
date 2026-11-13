@@ -1,0 +1,55 @@
+# ConvalidaFP — arranque local: cp .env.example .env && docker compose up --build
+name: convalidafp
+
+services:
+  db:
+    image: mariadb:11.8
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:-convalidafp}
+      MARIADB_USER: ${DB_USER:-convalidafp}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en el fichero .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Define DB_ROOT_PASSWORD en el fichero .env}
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  backend:
+    build: ./backend
+    environment:
+      # La conexión a la base de datos se empieza a usar en la Fase 1 (persistencia).
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/${DB_NAME:-convalidafp}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-convalidafp}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      LOGGING_STRUCTURED_FORMAT_CONSOLE: ecs
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ > /dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db-data:

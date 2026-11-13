@@ -1,0 +1,6 @@
+degree_id,university_id,name,degree_type,center,total_ects,plan_code,url
+UEJ-GP,UEJ,Grado de Prueba en Informática Ficticia,SIMPLE,Escuela de Ejemplo,240,PLAN-EJ-2020,https://uej.example/grados/prueba
+UEJ-GP-SUR,UEJ,Grado de Prueba en Informática Ficticia,SIMPLE,"Escuela de Ejemplo, Campus Sur",240,PLAN-EJ-2020,https://uej.example/sur/grados/prueba
+UEJ-DG,UEJ,Doble Grado de Prueba en Informática Ficticia y Gestión de Ejemplo,DOBLE,Escuela de Ejemplo,372,PLAN-EJ-DG-2021,https://uej.example/grados/doble-prueba
+UPR-GD,UPR,Grado de Demostración en Datos Ficticios,SIMPLE,Facultad de Prueba,240,PLAN-PR-2019,https://upr.example/grados/demostracion
+UFI-GS,UFI,"Grado Ficticio en Software, Sistemas y ""Cosas"" de Ejemplo",SIMPLE,,240,,

@@ -1,0 +1,7 @@
+rule_id,table_id,target_type,target_subject_id,recognized_ects,is_conditional,condition_text,source_id,source_page,source_excerpt
+R-001,T-EJ-01,SUBJECT,UEJ-GP-PROG1,,false,,,3,Módulo Ficticio 01 - Programación I
+R-002,T-EJ-01,SUBJECT,UEJ-GP-BD,,false,,,3,Módulos Ficticios 02 y 03 - Bases de Datos
+R-003,T-EJ-01,OPTATIVE_CREDITS,,6,false,,,4,6 créditos optativos
+R-004,T-EJ-01,SUBJECT,UEJ-GP-PRACT,,true,Solo si las prácticas son de naturaleza similar,,4,Formación en empresa - Prácticas externas
+R-005,T-EJ-01,SUBJECT,UEJ-GP-PROG2,,false,,,3,Módulo Ficticio 01 - Programación II
+R-006,T-EJ-01,SUBJECT,UEJ-GP-WEB,,false,,,3,Módulo Ficticio 07 - Desarrollo Web

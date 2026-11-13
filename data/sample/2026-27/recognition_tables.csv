@@ -1,0 +1,9 @@
+table_id,cycle_id,degree_id,academic_year,status,source_id,table_max_ects,notes
+T-EJ-01,CF-EJ,UEJ-GP,2026-27,VIGENTE,S-EJ-01,,
+T-EJ-02,CF-EJ,UEJ-DG,2026-27,VIGENTE,S-EJ-01,,Doble grado: el tope del 25 % se calcula sobre 372 ECTS
+T-EJ-03,CF-EJ,UEJ-GP-SUR,2026-27,VIGENTE,S-EJ-02,,"Mismo grado que UEJ-GP en otro centro, con tabla propia"
+T-EJ-04,CF-EJ-2024,UEJ-GP,2026-27,VIGENTE,S-EJ-03,,Título actualizado: se trata como un ciclo distinto
+T-PR-01,CF-EJ,UPR-GD,2026-27,VIGENTE,S-PR-01,,La suma de las reglas (66) supera el 25 % del grado (60)
+T-PR-02,CF-PR,UPR-GD,2026-27,VIGENTE,S-PR-01,30,"Tope propio de la tabla, inferior al 25 %"
+T-FI-01,CF-EJ,UFI-GS,2026-27,SIN_CONVENIO,S-FI-01,,Verificado: no existe tabla firmada
+T-FI-02,CF-PR,UEJ-DG,2026-27,SIN_CONVENIO,,,"Verificado por el revisor, sin documento público"

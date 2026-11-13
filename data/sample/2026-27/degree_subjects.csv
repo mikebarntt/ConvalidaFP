@@ -1,0 +1,184 @@
+subject_id,degree_id,name,ects,subject_type,course_year,official_code
+UEJ-GP-PROG1,UEJ-GP,Programación de Prueba I,6,BASICA,1,EJ1001
+UEJ-GP-PROG2,UEJ-GP,Programación de Prueba II,6,BASICA,1,EJ1002
+UEJ-GP-MAT1,UEJ-GP,Matemática Ficticia I,6,BASICA,1,EJ1003
+UEJ-GP-MAT2,UEJ-GP,Matemática Ficticia II,6,BASICA,1,EJ1004
+UEJ-GP-FIS,UEJ-GP,Física de Ejemplo,6,BASICA,1,EJ1005
+UEJ-GP-EMP,UEJ-GP,Empresa de Ejemplo,6,BASICA,1,EJ1006
+UEJ-GP-FCOMP,UEJ-GP,Fundamentos de Computadores Ficticios,6,BASICA,1,EJ1007
+UEJ-GP-LOG,UEJ-GP,Lógica de Prueba,4.5,BASICA,1,EJ1008
+UEJ-GP-EST,UEJ-GP,Estadística de Ejemplo,4.5,BASICA,1,EJ1009
+UEJ-GP-EXPR,UEJ-GP,"Expresión Oral, Escrita y ""Habilidades Blandas"" de Prueba",3,OBLIGATORIA,1,EJ1010
+UEJ-GP-INGL,UEJ-GP,Idioma Ficticio Técnico,6,OBLIGATORIA,1,EJ1011
+UEJ-GP-BD,UEJ-GP,Bases de Datos de Ejemplo,6,OBLIGATORIA,2,EJ1012
+UEJ-GP-SO,UEJ-GP,Sistemas Operativos Ficticios,6,OBLIGATORIA,2,EJ1013
+UEJ-GP-ED,UEJ-GP,Estructuras de Datos de Prueba,6,OBLIGATORIA,2,EJ1014
+UEJ-GP-REDES,UEJ-GP,Redes de Ejemplo,6,OBLIGATORIA,2,EJ1015
+UEJ-GP-IS1,UEJ-GP,Ingeniería del Software Ficticia I,6,OBLIGATORIA,2,EJ1016
+UEJ-GP-WEB,UEJ-GP,Desarrollo Web de Prueba,6,OBLIGATORIA,2,EJ1017
+UEJ-GP-ARQ,UEJ-GP,Arquitectura de Computadores de Ejemplo,6,OBLIGATORIA,2,EJ1018
+UEJ-GP-ALG,UEJ-GP,Algoritmia Ficticia,6,OBLIGATORIA,2,EJ1019
+UEJ-GP-IPO,UEJ-GP,Interacción Persona-Ordenador de Prueba,4.5,OBLIGATORIA,2,EJ1020
+UEJ-GP-LM,UEJ-GP,Lenguajes de Marcas de Ejemplo,4.5,OBLIGATORIA,2,EJ1021
+UEJ-GP-PAR,UEJ-GP,Paradigmas de Prueba,3,OBLIGATORIA,2,EJ1022
+UEJ-GP-IS2,UEJ-GP,Ingeniería del Software Ficticia II,6,OBLIGATORIA,3,EJ1023
+UEJ-GP-IA,UEJ-GP,Inteligencia Artificial Ficticia,6,OBLIGATORIA,3,EJ1024
+UEJ-GP-SEG,UEJ-GP,Seguridad de Ejemplo,6,OBLIGATORIA,3,EJ1025
+UEJ-GP-SD,UEJ-GP,Sistemas Distribuidos de Prueba,6,OBLIGATORIA,3,EJ1026
+UEJ-GP-COMP,UEJ-GP,Compiladores Ficticios,6,OBLIGATORIA,3,EJ1027
+UEJ-GP-GP,UEJ-GP,Gestión de Proyectos de Ejemplo,6,OBLIGATORIA,3,EJ1028
+UEJ-GP-BD2,UEJ-GP,Bases de Datos Avanzadas de Prueba,6,OBLIGATORIA,3,EJ1029
+UEJ-GP-MOV,UEJ-GP,Desarrollo Móvil Ficticio,6,OBLIGATORIA,3,EJ1030
+UEJ-GP-OPT1,UEJ-GP,Optativa de Ejemplo A,6,OPTATIVA,3,
+UEJ-GP-OPT2,UEJ-GP,Optativa de Ejemplo B,6,OPTATIVA,3,
+UEJ-GP-OPT3,UEJ-GP,Optativa de Ejemplo C,6,OPTATIVA,4,
+UEJ-GP-OPT4,UEJ-GP,Optativa de Ejemplo D,6,OPTATIVA,4,
+UEJ-GP-OPT5,UEJ-GP,Optativa de Ejemplo E,6,OPTATIVA,4,
+UEJ-GP-CLOUD,UEJ-GP,Computación en la Nube de Prueba,6,OBLIGATORIA,4,EJ1036
+UEJ-GP-ETICA,UEJ-GP,Ética y Legislación Ficticia,6,OBLIGATORIA,4,EJ1037
+UEJ-GP-EMPR,UEJ-GP,Emprendimiento de Ejemplo,6,OBLIGATORIA,4,EJ1038
+UEJ-GP-PRACT,UEJ-GP,Prácticas Externas de Prueba,12,PRACTICAS_EXTERNAS,4,EJ1039
+UEJ-GP-TFG,UEJ-GP,Trabajo Fin de Grado de Prueba,12,TFG,4,EJ1040
+UEJ-GP-SUR-PROG1,UEJ-GP-SUR,Programación de Prueba I,6,BASICA,1,EJ1001
+UEJ-GP-SUR-PROG2,UEJ-GP-SUR,Programación de Prueba II,6,BASICA,1,EJ1002
+UEJ-GP-SUR-MAT1,UEJ-GP-SUR,Matemática Ficticia I,6,BASICA,1,EJ1003
+UEJ-GP-SUR-MAT2,UEJ-GP-SUR,Matemática Ficticia II,6,BASICA,1,EJ1004
+UEJ-GP-SUR-FIS,UEJ-GP-SUR,Física de Ejemplo,6,BASICA,1,EJ1005
+UEJ-GP-SUR-EMP,UEJ-GP-SUR,Empresa de Ejemplo,6,BASICA,1,EJ1006
+UEJ-GP-SUR-FCOMP,UEJ-GP-SUR,Fundamentos de Computadores Ficticios,6,BASICA,1,EJ1007
+UEJ-GP-SUR-LOG,UEJ-GP-SUR,Lógica de Prueba,4.5,BASICA,1,EJ1008
+UEJ-GP-SUR-EST,UEJ-GP-SUR,Estadística de Ejemplo,4.5,BASICA,1,EJ1009
+UEJ-GP-SUR-EXPR,UEJ-GP-SUR,"Expresión Oral, Escrita y ""Habilidades Blandas"" de Prueba",3,OBLIGATORIA,1,EJ1010
+UEJ-GP-SUR-INGL,UEJ-GP-SUR,Idioma Ficticio Técnico,6,OBLIGATORIA,1,EJ1011
+UEJ-GP-SUR-BD,UEJ-GP-SUR,Bases de Datos de Ejemplo,6,OBLIGATORIA,2,EJ1012
+UEJ-GP-SUR-SO,UEJ-GP-SUR,Sistemas Operativos Ficticios,6,OBLIGATORIA,2,EJ1013
+UEJ-GP-SUR-ED,UEJ-GP-SUR,Estructuras de Datos de Prueba,6,OBLIGATORIA,2,EJ1014
+UEJ-GP-SUR-REDES,UEJ-GP-SUR,Redes de Ejemplo,6,OBLIGATORIA,2,EJ1015
+UEJ-GP-SUR-IS1,UEJ-GP-SUR,Ingeniería del Software Ficticia I,6,OBLIGATORIA,2,EJ1016
+UEJ-GP-SUR-WEB,UEJ-GP-SUR,Desarrollo Web de Prueba,6,OBLIGATORIA,2,EJ1017
+UEJ-GP-SUR-ARQ,UEJ-GP-SUR,Arquitectura de Computadores de Ejemplo,6,OBLIGATORIA,2,EJ1018
+UEJ-GP-SUR-ALG,UEJ-GP-SUR,Algoritmia Ficticia,6,OBLIGATORIA,2,EJ1019
+UEJ-GP-SUR-IPO,UEJ-GP-SUR,Interacción Persona-Ordenador de Prueba,4.5,OBLIGATORIA,2,EJ1020
+UEJ-GP-SUR-LM,UEJ-GP-SUR,Lenguajes de Marcas de Ejemplo,4.5,OBLIGATORIA,2,EJ1021
+UEJ-GP-SUR-PAR,UEJ-GP-SUR,Paradigmas de Prueba,3,OBLIGATORIA,2,EJ1022
+UEJ-GP-SUR-IS2,UEJ-GP-SUR,Ingeniería del Software Ficticia II,6,OBLIGATORIA,3,EJ1023
+UEJ-GP-SUR-IA,UEJ-GP-SUR,Inteligencia Artificial Ficticia,6,OBLIGATORIA,3,EJ1024
+UEJ-GP-SUR-SEG,UEJ-GP-SUR,Seguridad de Ejemplo,6,OBLIGATORIA,3,EJ1025
+UEJ-GP-SUR-SD,UEJ-GP-SUR,Sistemas Distribuidos de Prueba,6,OBLIGATORIA,3,EJ1026
+UEJ-GP-SUR-COMP,UEJ-GP-SUR,Compiladores Ficticios,6,OBLIGATORIA,3,EJ1027
+UEJ-GP-SUR-GP,UEJ-GP-SUR,Gestión de Proyectos de Ejemplo,6,OBLIGATORIA,3,EJ1028
+UEJ-GP-SUR-BD2,UEJ-GP-SUR,Bases de Datos Avanzadas de Prueba,6,OBLIGATORIA,3,EJ1029
+UEJ-GP-SUR-MOV,UEJ-GP-SUR,Desarrollo Móvil Ficticio,6,OBLIGATORIA,3,EJ1030
+UEJ-GP-SUR-OPT1,UEJ-GP-SUR,Optativa de Ejemplo A,6,OPTATIVA,3,
+UEJ-GP-SUR-OPT2,UEJ-GP-SUR,Optativa de Ejemplo B,6,OPTATIVA,3,
+UEJ-GP-SUR-OPT3,UEJ-GP-SUR,Optativa de Ejemplo C,6,OPTATIVA,4,
+UEJ-GP-SUR-OPT4,UEJ-GP-SUR,Optativa de Ejemplo D,6,OPTATIVA,4,
+UEJ-GP-SUR-OPT5,UEJ-GP-SUR,Optativa de Ejemplo E,6,OPTATIVA,4,
+UEJ-GP-SUR-CLOUD,UEJ-GP-SUR,Computación en la Nube de Prueba,6,OBLIGATORIA,4,EJ1036
+UEJ-GP-SUR-ETICA,UEJ-GP-SUR,Ética y Legislación Ficticia,6,OBLIGATORIA,4,EJ1037
+UEJ-GP-SUR-EMPR,UEJ-GP-SUR,Emprendimiento de Ejemplo,6,OBLIGATORIA,4,EJ1038
+UEJ-GP-SUR-PRACT,UEJ-GP-SUR,Prácticas Externas de Prueba,12,PRACTICAS_EXTERNAS,4,EJ1039
+UEJ-GP-SUR-TFG,UEJ-GP-SUR,Trabajo Fin de Grado de Prueba,12,TFG,4,EJ1040
+UEJ-DG-PROG1,UEJ-DG,Programación de Prueba I,6,BASICA,1,DG1001
+UEJ-DG-PROG2,UEJ-DG,Programación de Prueba II,6,BASICA,1,DG1002
+UEJ-DG-MAT1,UEJ-DG,Matemática Ficticia I,6,BASICA,1,DG1003
+UEJ-DG-MAT2,UEJ-DG,Matemática Ficticia II,6,BASICA,1,DG1004
+UEJ-DG-FIS,UEJ-DG,Física de Ejemplo,6,BASICA,1,DG1005
+UEJ-DG-FCOMP,UEJ-DG,Fundamentos de Computadores Ficticios,6,BASICA,1,DG1006
+UEJ-DG-LOG,UEJ-DG,Lógica de Prueba,4.5,BASICA,1,DG1007
+UEJ-DG-EST,UEJ-DG,Estadística de Ejemplo,4.5,BASICA,1,DG1008
+UEJ-DG-EXPR,UEJ-DG,"Expresión Oral, Escrita y ""Habilidades Blandas"" de Prueba",3,OBLIGATORIA,1,DG1009
+UEJ-DG-INGL,UEJ-DG,Idioma Ficticio Técnico,6,OBLIGATORIA,1,DG1010
+UEJ-DG-BD,UEJ-DG,Bases de Datos de Ejemplo,6,OBLIGATORIA,2,DG1011
+UEJ-DG-SO,UEJ-DG,Sistemas Operativos Ficticios,6,OBLIGATORIA,2,DG1012
+UEJ-DG-ED,UEJ-DG,Estructuras de Datos de Prueba,6,OBLIGATORIA,2,DG1013
+UEJ-DG-REDES,UEJ-DG,Redes de Ejemplo,6,OBLIGATORIA,2,DG1014
+UEJ-DG-IS1,UEJ-DG,Ingeniería del Software Ficticia I,6,OBLIGATORIA,2,DG1015
+UEJ-DG-WEB,UEJ-DG,Desarrollo Web de Prueba,6,OBLIGATORIA,2,DG1016
+UEJ-DG-ARQ,UEJ-DG,Arquitectura de Computadores de Ejemplo,6,OBLIGATORIA,2,DG1017
+UEJ-DG-ALG,UEJ-DG,Algoritmia Ficticia,6,OBLIGATORIA,2,DG1018
+UEJ-DG-IPO,UEJ-DG,Interacción Persona-Ordenador de Prueba,4.5,OBLIGATORIA,2,DG1019
+UEJ-DG-LM,UEJ-DG,Lenguajes de Marcas de Ejemplo,4.5,OBLIGATORIA,2,DG1020
+UEJ-DG-PAR,UEJ-DG,Paradigmas de Prueba,3,OBLIGATORIA,2,DG1021
+UEJ-DG-IS2,UEJ-DG,Ingeniería del Software Ficticia II,6,OBLIGATORIA,3,DG1022
+UEJ-DG-IA,UEJ-DG,Inteligencia Artificial Ficticia,6,OBLIGATORIA,3,DG1023
+UEJ-DG-SEG,UEJ-DG,Seguridad de Ejemplo,6,OBLIGATORIA,3,DG1024
+UEJ-DG-SD,UEJ-DG,Sistemas Distribuidos de Prueba,6,OBLIGATORIA,3,DG1025
+UEJ-DG-COMP,UEJ-DG,Compiladores Ficticios,6,OBLIGATORIA,3,DG1026
+UEJ-DG-GP,UEJ-DG,Gestión de Proyectos de Ejemplo,6,OBLIGATORIA,3,DG1027
+UEJ-DG-BD2,UEJ-DG,Bases de Datos Avanzadas de Prueba,6,OBLIGATORIA,3,DG1028
+UEJ-DG-MOV,UEJ-DG,Desarrollo Móvil Ficticio,6,OBLIGATORIA,3,DG1029
+UEJ-DG-CLOUD,UEJ-DG,Computación en la Nube de Prueba,6,OBLIGATORIA,5,DG1030
+UEJ-DG-ETICA,UEJ-DG,Ética y Legislación Ficticia,6,OBLIGATORIA,5,DG1031
+UEJ-DG-PRACT,UEJ-DG,Prácticas Externas de Prueba,12,PRACTICAS_EXTERNAS,6,DG1032
+UEJ-DG-TFG,UEJ-DG,Trabajo Fin de Grado de Prueba,12,TFG,6,DG1033
+UEJ-DG-G01,UEJ-DG,Contabilidad Ficticia I,6,BASICA,1,DG1034
+UEJ-DG-G02,UEJ-DG,Contabilidad Ficticia II,6,BASICA,1,DG1035
+UEJ-DG-G03,UEJ-DG,Microeconomía de Ejemplo,6,BASICA,1,DG1036
+UEJ-DG-G04,UEJ-DG,Macroeconomía de Ejemplo,6,BASICA,1,DG1037
+UEJ-DG-G05,UEJ-DG,Derecho Mercantil de Prueba,6,BASICA,1,DG1038
+UEJ-DG-G06,UEJ-DG,Marketing Ficticio,6,BASICA,2,DG1039
+UEJ-DG-G07,UEJ-DG,Finanzas de Ejemplo I,6,BASICA,2,DG1040
+UEJ-DG-G08,UEJ-DG,Finanzas de Ejemplo II,6,BASICA,2,DG1041
+UEJ-DG-G09,UEJ-DG,Dirección Estratégica de Prueba,6,BASICA,2,DG1042
+UEJ-DG-G10,UEJ-DG,Recursos Humanos Ficticios,6,BASICA,2,DG1043
+UEJ-DG-G11,UEJ-DG,Fiscalidad de Ejemplo,6,OBLIGATORIA,3,DG1044
+UEJ-DG-G12,UEJ-DG,Organización de Empresas de Prueba,6,OBLIGATORIA,3,DG1045
+UEJ-DG-G13,UEJ-DG,Investigación de Mercados Ficticia,6,OBLIGATORIA,3,DG1046
+UEJ-DG-G14,UEJ-DG,Econometría de Ejemplo,6,OBLIGATORIA,3,DG1047
+UEJ-DG-G15,UEJ-DG,Historia Económica de Prueba,6,OBLIGATORIA,3,DG1048
+UEJ-DG-G16,UEJ-DG,Dirección de Operaciones Ficticia,6,OBLIGATORIA,4,DG1049
+UEJ-DG-G17,UEJ-DG,Contabilidad de Costes de Ejemplo,6,OBLIGATORIA,4,DG1050
+UEJ-DG-G18,UEJ-DG,Análisis de Estados Ficticios,6,OBLIGATORIA,4,DG1051
+UEJ-DG-G19,UEJ-DG,Comercio Internacional de Prueba,6,OBLIGATORIA,4,DG1052
+UEJ-DG-G20,UEJ-DG,Economía Ficticia Mundial,6,OBLIGATORIA,4,DG1053
+UEJ-DG-G21,UEJ-DG,Derecho Laboral de Ejemplo,6,OBLIGATORIA,5,DG1054
+UEJ-DG-G22,UEJ-DG,Sociología de la Empresa de Prueba,6,OBLIGATORIA,5,DG1055
+UEJ-DG-G23,UEJ-DG,Dirección Comercial Ficticia,6,OBLIGATORIA,5,DG1056
+UEJ-DG-G24,UEJ-DG,Auditoría de Ejemplo,6,OBLIGATORIA,5,DG1057
+UEJ-DG-G25,UEJ-DG,Creación de Empresas de Prueba,6,OBLIGATORIA,5,DG1058
+UEJ-DG-G26,UEJ-DG,Política Económica Ficticia,6,OBLIGATORIA,6,DG1059
+UEJ-DG-G27,UEJ-DG,Juegos y Decisiones de Ejemplo,6,OBLIGATORIA,6,DG1060
+UEJ-DG-TFG2,UEJ-DG,Trabajo Fin de Grado de Prueba (Gestión),12,TFG,6,DG1061
+UPR-GD-PROG,UPR-GD,Programación Demostrativa,6,BASICA,1,PR1001
+UPR-GD-PROG2,UPR-GD,Programación Demostrativa Avanzada,6,BASICA,1,PR1002
+UPR-GD-MAT1,UPR-GD,Álgebra de Ejemplo,6,BASICA,1,PR1003
+UPR-GD-MAT2,UPR-GD,Cálculo de Prueba,6,BASICA,1,PR1004
+UPR-GD-EST1,UPR-GD,Estadística Ficticia I,6,BASICA,1,PR1005
+UPR-GD-BD,UPR-GD,Bases de Datos Demostrativas,6,BASICA,1,PR1006
+UPR-GD-FDAT,UPR-GD,Fundamentos de Datos de Ejemplo,6,BASICA,1,PR1007
+UPR-GD-EMP,UPR-GD,Economía de Prueba,6,BASICA,1,PR1008
+UPR-GD-FCOMP,UPR-GD,Computadores de Demostración,6,BASICA,1,PR1009
+UPR-GD-COM,UPR-GD,"Comunicación de Datos, Informes y ""Narrativa"" de Ejemplo",6,OBLIGATORIA,1,PR1010
+UPR-GD-EST2,UPR-GD,Estadística Ficticia II,6,OBLIGATORIA,2,PR1011
+UPR-GD-OPTIM,UPR-GD,Optimización de Prueba,6,OBLIGATORIA,2,PR1012
+UPR-GD-ED,UPR-GD,Estructuras de Datos Demostrativas,6,OBLIGATORIA,2,PR1013
+UPR-GD-SO,UPR-GD,Sistemas de Ejemplo,6,OBLIGATORIA,2,PR1014
+UPR-GD-REDES,UPR-GD,Redes de Prueba,6,OBLIGATORIA,2,PR1015
+UPR-GD-AA1,UPR-GD,Aprendizaje Automático Ficticio I,6,OBLIGATORIA,2,PR1016
+UPR-GD-VIS,UPR-GD,Visualización de Ejemplo,6,OBLIGATORIA,2,PR1017
+UPR-GD-WEB,UPR-GD,Tecnologías Web de Demostración,6,OBLIGATORIA,2,PR1018
+UPR-GD-BD2,UPR-GD,Almacenes de Datos de Prueba,6,OBLIGATORIA,2,PR1019
+UPR-GD-ETL,UPR-GD,Integración de Datos Ficticia,6,OBLIGATORIA,2,PR1020
+UPR-GD-AA2,UPR-GD,Aprendizaje Automático Ficticio II,6,OBLIGATORIA,3,PR1021
+UPR-GD-BIG,UPR-GD,Datos Masivos de Ejemplo,6,OBLIGATORIA,3,PR1022
+UPR-GD-SEG,UPR-GD,Seguridad y Privacidad de Prueba,6,OBLIGATORIA,3,PR1023
+UPR-GD-PLN,UPR-GD,Lenguaje Natural Ficticio,6,OBLIGATORIA,3,PR1024
+UPR-GD-SERIES,UPR-GD,Series Temporales de Ejemplo,6,OBLIGATORIA,3,PR1025
+UPR-GD-CLOUD,UPR-GD,Nube de Demostración,6,OBLIGATORIA,3,PR1026
+UPR-GD-IS,UPR-GD,Ingeniería de Software de Prueba,6,OBLIGATORIA,3,PR1027
+UPR-GD-OPT1,UPR-GD,Optativa Demostrativa A,6,OPTATIVA,3,
+UPR-GD-OPT2,UPR-GD,Optativa Demostrativa B,6,OPTATIVA,3,
+UPR-GD-OPT3,UPR-GD,Optativa Demostrativa C,6,OPTATIVA,3,
+UPR-GD-ETICA,UPR-GD,Ética de Datos Ficticia,6,OBLIGATORIA,4,PR1031
+UPR-GD-GP,UPR-GD,Proyectos de Datos de Ejemplo,6,OBLIGATORIA,4,PR1032
+UPR-GD-OPT4,UPR-GD,Optativa Demostrativa D,6,OPTATIVA,4,
+UPR-GD-OPT5,UPR-GD,Optativa Demostrativa E,6,OPTATIVA,4,
+UPR-GD-VISION,UPR-GD,Visión Artificial de Prueba,6,OBLIGATORIA,4,PR1035
+UPR-GD-GRAF,UPR-GD,Grafos y Redes Ficticias,6,OBLIGATORIA,4,PR1036
+UPR-GD-PRACT,UPR-GD,Prácticas Externas Demostrativas,12,PRACTICAS_EXTERNAS,4,PR1037
+UPR-GD-TFG,UPR-GD,Trabajo Fin de Grado Demostrativo,12,TFG,4,PR1038
+UFI-GS-PROG,UFI-GS,Programación Ficticia,6,BASICA,1,
+UFI-GS-SIS,UFI-GS,Sistemas Ficticios,,OBLIGATORIA,2,
+UFI-GS-SW,UFI-GS,Software de Ejemplo,6,OBLIGATORIA,,
+UFI-GS-TFG,UFI-GS,Trabajo Fin de Grado Ficticio,12,TFG,4,

@@ -1,0 +1,7 @@
+source_id,document_type,title,issuer,publication_date,url,file_sha256,retrieved_at
+S-EJ-01,CONVENIO,Convenio Ficticio de Reconocimiento entre la Comunidad de Ejemplo y la Universidad de Ejemplo,Comunidad de Ejemplo,2025-03-14,https://uej.example/docs/convenio-ficticio.pdf,,2026-09-01
+S-EJ-02,TABLA_UNIVERSIDAD,"Tabla de Prueba de Reconocimientos, Campus Sur",Universidad de Ejemplo,2026-05-20,https://uej.example/sur/docs/tabla-prueba.pdf,,2026-09-01
+S-EJ-03,ADENDA,"Adenda Ficticia n.º 1 al Convenio Ficticio (títulos de la ""Norma Ficticia 02/2024"")",Comunidad de Ejemplo,2026-06-30,https://uej.example/docs/adenda-ficticia-1.pdf,,2026-09-01
+S-EJ-04,ADENDA,Adenda Ficticia n.º 2 al Convenio Ficticio (ampliación de prueba),Comunidad de Ejemplo,2026-07-15,https://uej.example/docs/adenda-ficticia-2.pdf,,2026-09-01
+S-PR-01,BOLETIN_OFICIAL,"Boletín Oficial Ficticio n.º 00: resolución de prueba, tablas de reconocimiento",Comunidad de Ejemplo,2026-02-02,https://boletin.example/00/resolucion-de-prueba.pdf,,2026-09-02
+S-FI-01,OTRO,Comunicación de Ejemplo: inexistencia de tabla de reconocimiento,"Universidad Ficticia de Tecnología ""San Ejemplo"", Campus Norte",,,,2026-09-03

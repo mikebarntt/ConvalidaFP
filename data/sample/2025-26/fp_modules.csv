@@ -1,0 +1,13 @@
+module_id,cycle_id,official_code,name,ects,course_year
+CF-EJ-M01,CF-EJ,MF01,Módulo Ficticio 01: Programación de Ejemplo,14,1
+CF-EJ-M02,CF-EJ,MF02,Módulo Ficticio 02: Bases de Datos de Ejemplo,12,1
+CF-EJ-M03,CF-EJ,MF03,Módulo Ficticio 03: Acceso a Datos de Prueba,9,2
+CF-EJ-M04,CF-EJ,MF04,Módulo Ficticio 04: Sistemas de Ejemplo,12,1
+CF-EJ-M05,CF-EJ,MF05,Módulo Ficticio 05: Entornos de Prueba,8,1
+CF-EJ-M06,CF-EJ,MF06,"Módulo Ficticio 06: Lenguajes de Marcas ""Demo"", XML y afines",7,1
+CF-EJ-M07,CF-EJ,MF07,Módulo Ficticio 07: Desarrollo Web de Ejemplo,12.5,2
+CF-EJ-M08,CF-EJ,MF08,Módulo Ficticio 08: Interfaces de Prueba,9.5,2
+CF-EJ-M09,CF-EJ,MF09,Módulo Ficticio 09: Empresa Ficticia e Iniciativa,4,2
+CF-EJ-M10,CF-EJ,MF10,Módulo Ficticio 10: Orientación Laboral de Ejemplo,5,1
+CF-EJ-PRY,CF-EJ,MFPRY,Módulo Ficticio de Proyecto Final,5,2
+CF-EJ-FCT,CF-EJ,MFFCT,Módulo Ficticio de Formación en Empresa,22,2

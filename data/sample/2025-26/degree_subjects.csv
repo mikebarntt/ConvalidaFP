@@ -1,0 +1,41 @@
+subject_id,degree_id,name,ects,subject_type,course_year,official_code
+UEJ-GP-PROG1,UEJ-GP,Programación de Prueba I,6,BASICA,1,EJ1001
+UEJ-GP-PROG2,UEJ-GP,Programación de Prueba II,6,BASICA,1,EJ1002
+UEJ-GP-MAT1,UEJ-GP,Matemática Ficticia I,6,BASICA,1,EJ1003
+UEJ-GP-MAT2,UEJ-GP,Matemática Ficticia II,6,BASICA,1,EJ1004
+UEJ-GP-FIS,UEJ-GP,Física de Ejemplo,6,BASICA,1,EJ1005
+UEJ-GP-EMP,UEJ-GP,Empresa de Ejemplo,6,BASICA,1,EJ1006
+UEJ-GP-FCOMP,UEJ-GP,Fundamentos de Computadores Ficticios,6,BASICA,1,EJ1007
+UEJ-GP-LOG,UEJ-GP,Lógica de Prueba,4.5,BASICA,1,EJ1008
+UEJ-GP-EST,UEJ-GP,Estadística de Ejemplo,4.5,BASICA,1,EJ1009
+UEJ-GP-EXPR,UEJ-GP,"Expresión Oral, Escrita y ""Habilidades Blandas"" de Prueba",3,OBLIGATORIA,1,EJ1010
+UEJ-GP-INGL,UEJ-GP,Idioma Ficticio Técnico,6,OBLIGATORIA,1,EJ1011
+UEJ-GP-BD,UEJ-GP,Bases de Datos de Ejemplo,6,OBLIGATORIA,2,EJ1012
+UEJ-GP-SO,UEJ-GP,Sistemas Operativos Ficticios,6,OBLIGATORIA,2,EJ1013
+UEJ-GP-ED,UEJ-GP,Estructuras de Datos de Prueba,6,OBLIGATORIA,2,EJ1014
+UEJ-GP-REDES,UEJ-GP,Redes de Ejemplo,6,OBLIGATORIA,2,EJ1015
+UEJ-GP-IS1,UEJ-GP,Ingeniería del Software Ficticia I,6,OBLIGATORIA,2,EJ1016
+UEJ-GP-WEB,UEJ-GP,Programación Web de Prueba,6,OBLIGATORIA,2,EJ1017
+UEJ-GP-ARQ,UEJ-GP,Arquitectura de Computadores de Ejemplo,6,OBLIGATORIA,2,EJ1018
+UEJ-GP-ALG,UEJ-GP,Algoritmia Ficticia,6,OBLIGATORIA,2,EJ1019
+UEJ-GP-IPO,UEJ-GP,Interacción Persona-Ordenador de Prueba,4.5,OBLIGATORIA,2,EJ1020
+UEJ-GP-LM,UEJ-GP,Lenguajes de Marcas de Ejemplo,4.5,OBLIGATORIA,2,EJ1021
+UEJ-GP-PAR,UEJ-GP,Paradigmas de Prueba,3,OBLIGATORIA,2,EJ1022
+UEJ-GP-IS2,UEJ-GP,Ingeniería del Software Ficticia II,6,OBLIGATORIA,3,EJ1023
+UEJ-GP-IA,UEJ-GP,Inteligencia Artificial Ficticia,6,OBLIGATORIA,3,EJ1024
+UEJ-GP-SEG,UEJ-GP,Seguridad de Ejemplo,6,OBLIGATORIA,3,EJ1025
+UEJ-GP-SD,UEJ-GP,Sistemas Distribuidos de Prueba,6,OBLIGATORIA,3,EJ1026
+UEJ-GP-COMP,UEJ-GP,Compiladores Ficticios,6,OBLIGATORIA,3,EJ1027
+UEJ-GP-GP,UEJ-GP,Gestión de Proyectos de Ejemplo,6,OBLIGATORIA,3,EJ1028
+UEJ-GP-BD2,UEJ-GP,Bases de Datos Avanzadas de Prueba,6,OBLIGATORIA,3,EJ1029
+UEJ-GP-MOV,UEJ-GP,Desarrollo Móvil Ficticio,6,OBLIGATORIA,3,EJ1030
+UEJ-GP-OPT1,UEJ-GP,Optativa de Ejemplo A,6,OPTATIVA,3,
+UEJ-GP-OPT2,UEJ-GP,Optativa de Ejemplo B,6,OPTATIVA,3,
+UEJ-GP-OPT3,UEJ-GP,Optativa de Ejemplo C,6,OPTATIVA,4,
+UEJ-GP-OPT4,UEJ-GP,Optativa de Ejemplo D,6,OPTATIVA,4,
+UEJ-GP-OPT5,UEJ-GP,Optativa de Ejemplo E,6,OPTATIVA,4,
+UEJ-GP-CLOUD,UEJ-GP,Computación en la Nube de Prueba,6,OBLIGATORIA,4,EJ1036
+UEJ-GP-ETICA,UEJ-GP,Ética y Legislación Ficticia,6,OBLIGATORIA,4,EJ1037
+UEJ-GP-EMPR,UEJ-GP,Emprendimiento de Ejemplo,6,OBLIGATORIA,4,EJ1038
+UEJ-GP-PRACT,UEJ-GP,Prácticas Externas de Prueba,12,PRACTICAS_EXTERNAS,4,EJ1039
+UEJ-GP-TFG,UEJ-GP,Trabajo Fin de Grado de Prueba,12,TFG,4,EJ1040

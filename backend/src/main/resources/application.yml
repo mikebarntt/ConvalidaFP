@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: convalidafp
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+convalidafp:
+  simulation:
+    # Tope legal de reconocimiento como fracción de la carga del grado (regla inquebrantable 4).
+    # Es un parámetro de configuración: el motor (Fase 2) lo lee de aquí, nunca de un número fijo.
+    max-recognition-ratio: 0.25

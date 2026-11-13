@@ -1,0 +1,55 @@
+rule_id,table_id,target_type,target_subject_id,recognized_ects,is_conditional,condition_text,source_id,source_page,source_excerpt
+R-001,T-EJ-01,SUBJECT,UEJ-GP-PROG1,,false,,,3,Módulo Ficticio 01 - Programación I
+R-002,T-EJ-01,SUBJECT,UEJ-GP-BD,,false,,,3,Módulos Ficticios 02 y 03 - Bases de Datos
+R-003,T-EJ-01,OPTATIVE_CREDITS,,6,false,,,4,6 créditos optativos
+R-004,T-EJ-01,SUBJECT,UEJ-GP-PRACT,,true,Solo si las prácticas son de naturaleza similar,,4,Formación en empresa - Prácticas externas
+R-005,T-EJ-01,SUBJECT,UEJ-GP-PROG2,,false,,,3,Módulo Ficticio 01 - Programación II
+R-006,T-EJ-01,SUBJECT,UEJ-GP-WEB,,false,,,3,Módulo Ficticio 07 - Desarrollo Web
+R-007,T-EJ-01,SUBJECT,UEJ-GP-WEB,,false,,,3,Módulos Ficticios 06 y 08 - Desarrollo Web
+R-008,T-EJ-01,SUBJECT,UEJ-GP-LM,,false,,,4,"Módulo Ficticio 06 ""Demo"", XML y afines - Lenguajes de Marcas (4,5 ECTS)"
+R-009,T-EJ-01,SUBJECT,UEJ-GP-IPO,,false,,,4,"Módulo Ficticio 08 - Interacción Persona-Ordenador (4,5 ECTS)"
+R-010,T-EJ-01,SUBJECT,UEJ-GP-EMP,,false,,,4,Módulo Ficticio 09 - Empresa
+R-011,T-EJ-02,SUBJECT,UEJ-DG-PROG1,,false,,,7,Módulo Ficticio 01 - Programación I
+R-012,T-EJ-02,SUBJECT,UEJ-DG-PROG2,,false,,,7,Módulo Ficticio 01 - Programación II
+R-013,T-EJ-02,SUBJECT,UEJ-DG-BD,,false,,,7,Módulos Ficticios 02 y 03 - Bases de Datos
+R-014,T-EJ-02,SUBJECT,UEJ-DG-WEB,,false,,,7,Módulo Ficticio 07 - Desarrollo Web
+R-015,T-EJ-02,SUBJECT,UEJ-DG-LM,,false,,,7,Módulo Ficticio 06 - Lenguajes de Marcas
+R-016,T-EJ-02,SUBJECT,UEJ-DG-IPO,,false,,,7,Módulo Ficticio 08 - Interacción Persona-Ordenador
+R-017,T-EJ-02,SUBJECT,UEJ-DG-SO,,false,,,8,Módulo Ficticio 04 - Sistemas Operativos
+R-018,T-EJ-02,SUBJECT,UEJ-DG-ED,,false,,,8,Módulos Ficticios 01 y 03 - Estructuras de Datos
+R-019,T-EJ-02,SUBJECT,UEJ-DG-IS1,,false,,,8,Módulo Ficticio 05 - Ingeniería del Software I
+R-020,T-EJ-02,SUBJECT,UEJ-DG-BD2,,false,,,8,Módulo Ficticio 03 - Bases de Datos Avanzadas
+R-021,T-EJ-02,SUBJECT,UEJ-DG-MOV,,false,,,8,Módulos Ficticios 07 y 08 - Desarrollo Móvil
+R-022,T-EJ-02,SUBJECT,UEJ-DG-G12,,false,,,9,Módulo Ficticio 09 - Organización de Empresas
+R-023,T-EJ-02,SUBJECT,UEJ-DG-G21,,false,,,9,Módulo Ficticio 10 - Derecho Laboral
+R-024,T-EJ-02,SUBJECT,UEJ-DG-PRACT,,true,Solo si las prácticas son de naturaleza similar,,9,Formación en empresa - Prácticas externas
+R-025,T-EJ-03,SUBJECT,UEJ-GP-SUR-PROG1,,false,,,2,Módulo Ficticio 01 - Programación I
+R-026,T-EJ-03,SUBJECT,UEJ-GP-SUR-BD,,false,,,2,Módulo Ficticio 02 - Bases de Datos
+R-027,T-EJ-03,SUBJECT,UEJ-GP-SUR-REDES,,false,,,2,Módulo Ficticio 04 - Redes
+R-028,T-EJ-03,OPTATIVE_CREDITS,,4.5,false,,,2,"4,5 créditos optativos"
+R-029,T-EJ-04,SUBJECT,UEJ-GP-PROG1,,false,,,1,Módulo Ficticio 01 - Programación I
+R-030,T-EJ-04,SUBJECT,UEJ-GP-PROG2,,false,,,1,Módulo Ficticio 01 - Programación II
+R-031,T-EJ-04,SUBJECT,UEJ-GP-BD,,false,,,1,Módulos Ficticios 02 y 03 - Bases de Datos
+R-032,T-EJ-04,SUBJECT,UEJ-GP-WEB,,false,,,1,Módulo Ficticio 07 - Desarrollo Web
+R-033,T-EJ-04,SUBJECT,UEJ-GP-INGL,,false,,,2,Módulo Ficticio 15 - Idioma Ficticio Técnico
+R-034,T-EJ-04,SUBJECT,UEJ-GP-SO,,false,,,2,Módulo Ficticio 04 - Sistemas Operativos
+R-035,T-PR-01,SUBJECT,UPR-GD-PROG,,false,,,12,Módulo Ficticio 01 - Programación Demostrativa
+R-036,T-PR-01,SUBJECT,UPR-GD-PROG2,,false,,,12,Módulo Ficticio 01 - Programación Demostrativa Avanzada
+R-037,T-PR-01,SUBJECT,UPR-GD-BD,,false,,,12,Módulo Ficticio 02 - Bases de Datos Demostrativas
+R-038,T-PR-01,SUBJECT,UPR-GD-BD2,,false,,,12,Módulos Ficticios 02 y 03 - Almacenes de Datos
+R-039,T-PR-01,SUBJECT,UPR-GD-SO,,false,,,13,Módulo Ficticio 04 - Sistemas
+R-040,T-PR-01,SUBJECT,UPR-GD-WEB,,false,,,13,Módulo Ficticio 07 - Tecnologías Web
+R-041,T-PR-01,SUBJECT,UPR-GD-IS,,false,,,13,Módulo Ficticio 05 - Ingeniería de Software
+R-042,T-PR-01,SUBJECT,UPR-GD-VIS,,false,,,13,Módulo Ficticio 08 - Visualización
+R-043,T-PR-01,SUBJECT,UPR-GD-EMP,,false,,,13,Módulo Ficticio 09 - Economía
+R-044,T-PR-01,OPTATIVE_CREDITS,,12,false,,,14,12 créditos optativos
+R-045,T-PR-01,SUBJECT,UPR-GD-PRACT,,true,Solo si la formación en empresa se realizó en el ámbito de los datos,,14,"Formación en empresa - Prácticas externas, según valoración"
+R-046,T-PR-02,SUBJECT,UPR-GD-REDES,,false,,,16,Módulo de Prueba 01 - Redes
+R-047,T-PR-02,SUBJECT,UPR-GD-SO,,false,,,16,Módulo de Prueba 02 - Sistemas
+R-048,T-PR-02,SUBJECT,UPR-GD-FCOMP,,false,,,16,Módulo de Prueba 03 - Computadores
+R-049,T-PR-02,SUBJECT,UPR-GD-SEG,,false,,,16,Módulo de Prueba 05 - Seguridad y Privacidad
+R-050,T-PR-02,SUBJECT,UPR-GD-BD,,false,,,17,Módulo de Prueba 06 - Bases de Datos Demostrativas
+R-051,T-PR-02,SUBJECT,UPR-GD-CLOUD,,false,,,17,Módulos de Prueba 04 y 07 - Nube de Demostración
+R-052,T-EJ-04,OPTATIVE_CREDITS,,3,false,,,2,3 créditos optativos por la posesión del título
+R-053,T-EJ-01,SUBJECT,UEJ-GP-IS1,,false,,S-EJ-04,2,Módulo Ficticio 05 - Ingeniería del Software I
+R-054,T-EJ-03,SUBJECT,UEJ-GP-SUR-PRACT,,true,,,3,Formación en empresa - Prácticas externas (condicionado)
