@@ -2,6 +2,13 @@ spring:
   application:
     name: convalidafp
 
+  # La conexión llega por variables de entorno (SPRING_DATASOURCE_URL, _USERNAME y _PASSWORD).
+  jpa:
+    open-in-view: false
+    hibernate:
+      # El esquema lo crea Flyway; Hibernate solo comprueba que las entidades encajan con él.
+      ddl-auto: validate
+
 server:
   port: 8080
 

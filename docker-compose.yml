@@ -21,7 +21,7 @@ services:
   backend:
     build: ./backend
     environment:
-      # La conexión a la base de datos se empieza a usar en la Fase 1 (persistencia).
+      # Conexión a la base de datos. Flyway crea el esquema al arrancar.
       SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/${DB_NAME:-convalidafp}
       SPRING_DATASOURCE_USERNAME: ${DB_USER:-convalidafp}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}

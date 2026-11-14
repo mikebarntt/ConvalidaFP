@@ -22,7 +22,7 @@ import org.apache.commons.csv.CSVRecord;
  * <p>Es código de test de la Fase 0: comprueba que el dataset de ejemplo cumple CONTRACT.md. El
  * importador real (paquete {@code ingestion}) se construye en la Fase 3.
  */
-final class Dataset {
+public final class Dataset {
 
   /** Ficheros del contrato y su cabecera exacta, en orden. */
   static final Map<String, List<String>> HEADERS = new LinkedHashMap<>();
@@ -98,13 +98,13 @@ final class Dataset {
   }
 
   /** Una fila de datos. {@code line} es el número de fila en el fichero (la cabecera es la 1). */
-  record Row(String file, long line, Map<String, String> values) {
-    String get(String column) {
+  public record Row(String file, long line, Map<String, String> values) {
+    public String get(String column) {
       String value = values.get(column);
       return value == null ? "" : value;
     }
 
-    boolean blank(String column) {
+    public boolean blank(String column) {
       return get(column).isEmpty();
     }
   }
@@ -117,13 +117,13 @@ final class Dataset {
     this.dir = dir;
   }
 
-  static Dataset load(Path dir) {
+  public static Dataset load(Path dir) {
     Dataset dataset = new Dataset(dir);
     HEADERS.forEach(dataset::loadFile);
     return dataset;
   }
 
-  List<Row> rows(String file) {
+  public List<Row> rows(String file) {
     return files.getOrDefault(file, List.of());
   }
 
