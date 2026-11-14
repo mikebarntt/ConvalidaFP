@@ -19,8 +19,8 @@ import org.apache.commons.csv.CSVRecord;
 /**
  * Lectura en bruto de un dataset (una carpeta de curso) para los tests del contrato.
  *
- * <p>Es código de test de la Fase 0: comprueba que el dataset de ejemplo cumple CONTRACT.md. El
- * importador real (paquete {@code ingestion}) se construye en la Fase 3.
+ * <p>Es código de test: lee los CSV tal cual, sin validar, para que los tests comparen resultados
+ * con lo que dicen los ficheros. La validación real está en {@code ingestion.DatasetValidator}.
  */
 public final class Dataset {
 

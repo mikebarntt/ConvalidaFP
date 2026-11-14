@@ -1,6 +1,6 @@
 /**
  * Importador: lectura y validación de los CSV del contrato de datos (CONTRACT.md).
  *
- * <p>Se construye en la Fase 3.
+ * <p>El punto de entrada es {@code DatasetImportService}.
  */
 package es.convalidafp.ingestion;

@@ -26,6 +26,10 @@ services:
       SPRING_DATASOURCE_USERNAME: ${DB_USER:-convalidafp}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       LOGGING_STRUCTURED_FORMAT_CONSOLE: ecs
+      # Arranque local: si la base de datos está vacía, carga y publica el dataset de ejemplo.
+      CONVALIDAFP_BOOTSTRAP_SAMPLE_DATASET_DIR: /data/sample
+    volumes:
+      - ./data/sample:/data/sample:ro
     depends_on:
       db:
         condition: service_healthy

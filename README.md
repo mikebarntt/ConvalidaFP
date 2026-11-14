@@ -11,17 +11,17 @@ sale cada reconocimiento.
 
 ## Estado
 
-**Fases 0 (contrato y esqueleto), 1 (persistencia) y 2 (motor de reglas) cerradas.** El motor ya
-calcula simulaciones, pero todavía no se puede usar desde fuera: no hay API (Fase 4) y la base de
-datos arranca vacía (cargar datasets es la Fase 3). El backend crea el esquema y responde a la
-comprobación de salud, y el frontend muestra una página «en construcción».
+**Fases 0 a 3 cerradas**: contrato y esqueleto, persistencia, motor de reglas e importador. Al
+arrancar con Docker Compose, el backend crea el esquema y carga y publica el dataset de ejemplo.
+Todavía no se puede simular desde fuera: no hay API (Fase 4) y el frontend muestra una página «en
+construcción».
 
 | Fase | Contenido | Estado |
 |---|---|---|
 | 0 | Contrato de datos, dataset de ejemplo, esqueleto, Docker Compose | Cerrada |
 | 1 | Persistencia: esquema, entidades, repositorios y versionado de datasets | Cerrada |
 | 2 | Motor de reglas: dominio puro, 15 casos límite, cobertura ≥ 90 % | Cerrada |
-| 3 | Importador | Pendiente |
+| 3 | Importador: validación, borrador, diferencias, publicación versionada | Cerrada |
 | 4 | API pública | Pendiente |
 | 5 | Administración y seguridad | Pendiente |
 | 6 | Frontend | Pendiente |
@@ -105,6 +105,25 @@ SimulationEngine.simulate(input, table, rules, degree) → SimulationResult
   conjunto concreto de módulos.
 - **Aritmética** en `BigDecimal`, sin redondeos. La misma entrada da siempre el mismo resultado.
 
+## Importador
+
+Está en el paquete `ingestion`. Todavía no tiene pantalla ni endpoint (Fase 5): se usa desde el
+código y desde el arranque local.
+
+- **Entrada.** Una carpeta de curso o un ZIP con los 9 CSV y el `manifest.json`.
+- **Validación en dos niveles.** Un solo **error** rechaza la carga entera y no se guarda nada. Los
+  **avisos** no bloquean. Cada incidencia lleva el código de CONTRACT.md, fichero, fila, columna y
+  motivo.
+- **Borrador.** Un dataset válido se guarda como versión `BORRADOR`; publicarlo es un paso aparte.
+  Un borrador se puede descartar, con todos sus datos.
+- **Diferencias.** Cada importación devuelve altas, cambios y bajas frente a la versión publicada
+  del mismo curso o, si no la hay, frente al curso anterior publicado. Los cambios en los módulos
+  de una regla se muestran como cambio de la regla (`required_modules`).
+- **Arranque local.** Con Docker Compose, si la base de datos está vacía se importan y publican
+  los cursos de `data/sample/`. Si ya hay algún dataset, no se toca nada.
+
+Para volver a cargar el ejemplo desde cero: `docker compose down -v` y `docker compose up --build`.
+
 ## Persistencia
 
 El esquema lo crea Flyway al arrancar (`backend/src/main/resources/db/migration/`) y refleja
@@ -132,6 +151,16 @@ El esquema lo crea Flyway al arrancar (`backend/src/main/resources/db/migration/
 - El dataset de ejemplo y los casos límite que cubre están en
   [data/sample/README.md](data/sample/README.md).
 - Todo lo que hay en `data/sample/` es ficticio. Ningún dato real se escribe sin documento fuente.
+
+## Decisiones acordadas para fases siguientes
+
+Acordadas con el dueño al cerrar la Fase 2. El aviso del importador (A3) ya está hecho en la Fase 3.
+
+- **Fase 6 (frontend).** Cuando el resultado viene limitado por el tope (`capped`), la lista de
+  asignaturas se titula «Reconocibles hasta el tope de X ECTS» en lugar de «Reconocidas», y se
+  muestra el aviso de que la universidad decide cuáles entran hasta el límite.
+- **Motor, sin cambios.** Una regla condicionada no se muestra si su asignatura ya está reconocida
+  sin condiciones.
 
 ## Forma de trabajo
 

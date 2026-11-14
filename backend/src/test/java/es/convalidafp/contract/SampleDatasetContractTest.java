@@ -3,10 +3,13 @@ package es.convalidafp.contract;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import es.convalidafp.contract.Dataset.Row;
+import es.convalidafp.ingestion.DatasetFiles;
+import es.convalidafp.ingestion.DatasetValidator;
+import es.convalidafp.ingestion.ValidationReport;
+import es.convalidafp.ingestion.ValidationReport.Issue;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +23,6 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -49,18 +51,18 @@ class SampleDatasetContractTest {
   @ValueSource(strings = {"2025-26", "2026-27"})
   @DisplayName("El dataset de ejemplo cumple el contrato")
   void sampleDatasetCompliesWithContract(String year) {
-    List<String> errors = ContractChecker.check(Dataset.load(SAMPLE.resolve(year))).errors();
-    assertThat(errors).as(ContractChecker.describe(errors)).isEmpty();
+    ValidationReport report = validate(year);
+    assertThat(report.errors()).as("errores: " + report.errors()).isEmpty();
   }
 
   @Test
   @DisplayName("Los avisos no bloquean: regla sin módulos y regla condicionada sin condición")
   void sampleDatasetProducesExactlyTheExpectedWarnings() {
-    assertThat(ContractChecker.check(previous).warnings()).isEmpty();
-    List<String> warnings = ContractChecker.check(current).warnings();
+    assertThat(validate("2025-26").warnings()).isEmpty();
+    List<Issue> warnings = validate("2026-27").warnings();
     assertThat(warnings).hasSize(2);
-    assertThat(warnings).anyMatch(w -> w.startsWith("recognition_rules.csv: fila 53: columna rule_id"));
-    assertThat(warnings).anyMatch(w -> w.startsWith("recognition_rules.csv: fila 55: columna condition_text"));
+    assertThat(warnings).anyMatch(w -> w.code().equals("A2") && w.row() == 53 && w.column().equals("rule_id"));
+    assertThat(warnings).anyMatch(w -> w.code().equals("A1") && w.row() == 55 && w.column().equals("condition_text"));
   }
 
   @Test
@@ -82,41 +84,6 @@ class SampleDatasetContractTest {
           .rows("source_documents.csv")
           .forEach(r -> assertThat(r.get("title")).as("fuente " + r.get("source_id")).containsPattern(FICTITIOUS));
     }
-  }
-
-  // ---------- El comprobador detecta datasets rotos (no es un test vacío) ----------
-
-  @Test
-  void checkerRejectsZeroEcts(@TempDir Path tmp) throws IOException {
-    Path dir = copyOf("2025-26", tmp);
-    replaceInFile(dir.resolve("fp_modules.csv"), ",14,1", ",0,1");
-    assertThat(ContractChecker.check(Dataset.load(dir)).errors())
-        .anyMatch(e -> e.startsWith("fp_modules.csv: fila 2: columna ects"))
-        .anyMatch(e -> e.contains("checksum de fp_modules.csv"));
-  }
-
-  @Test
-  void checkerRejectsBrokenForeignKey(@TempDir Path tmp) throws IOException {
-    Path dir = copyOf("2025-26", tmp);
-    replaceInFile(dir.resolve("rule_requirements.csv"), "R-001,CF-EJ-M01", "R-001,CF-EJ-M99");
-    assertThat(ContractChecker.check(Dataset.load(dir)).errors())
-        .anyMatch(e -> e.startsWith("rule_requirements.csv: fila 2: columna module_id"));
-  }
-
-  @Test
-  void checkerRejectsDegreeWithActiveTableAndUnknownTotalEcts(@TempDir Path tmp) throws IOException {
-    Path dir = copyOf("2025-26", tmp);
-    replaceInFile(dir.resolve("degrees.csv"), ",240,PLAN-EJ-2020", ",,PLAN-EJ-2020");
-    assertThat(ContractChecker.check(Dataset.load(dir)).errors())
-        .anyMatch(e -> e.startsWith("degrees.csv: fila 2: columna total_ects"));
-  }
-
-  @Test
-  void checkerRejectsTargetSubjectWithUnknownEcts(@TempDir Path tmp) throws IOException {
-    Path dir = copyOf("2025-26", tmp);
-    replaceInFile(dir.resolve("degree_subjects.csv"), ",6,BASICA,1,EJ1001", ",,BASICA,1,EJ1001");
-    assertThat(ContractChecker.check(Dataset.load(dir)).errors())
-        .anyMatch(e -> e.startsWith("degree_subjects.csv: fila 2: columna ects"));
   }
 
   // ---------- Los 15 casos límite están representados ----------
@@ -251,6 +218,15 @@ class SampleDatasetContractTest {
 
   // ---------- utilidades ----------
 
+  /** Valida un curso del dataset de ejemplo con el validador real del importador. */
+  private static ValidationReport validate(String year) {
+    try {
+      return new DatasetValidator().validate(DatasetFiles.fromDirectory(SAMPLE.resolve(year))).report();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
   private static List<Row> tables(Predicate<Row> filter) {
     return current.rows("recognition_tables.csv").stream().filter(filter).toList();
   }
@@ -296,19 +272,5 @@ class SampleDatasetContractTest {
     return new BigDecimal(degree.get("total_ects")).multiply(QUARTER);
   }
 
-  private static Path copyOf(String year, Path tmp) throws IOException {
-    Path target = Files.createDirectory(tmp.resolve(year));
-    try (Stream<Path> files = Files.list(SAMPLE.resolve(year))) {
-      for (Path file : files.toList()) {
-        Files.copy(file, target.resolve(file.getFileName()));
-      }
-    }
-    return target;
-  }
 
-  private static void replaceInFile(Path file, String search, String replacement) throws IOException {
-    String content = Files.readString(file, StandardCharsets.UTF_8);
-    assertThat(content).contains(search);
-    Files.writeString(file, content.replaceFirst(Pattern.quote(search), replacement), StandardCharsets.UTF_8);
-  }
 }

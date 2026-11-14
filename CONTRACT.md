@@ -247,7 +247,8 @@ fuente (S-EJ-04, página 2) en lugar de la de su tabla.
 
 ## 5. Validaciones
 
-El importador distingue dos niveles. Ambos indican fichero, fila, columna y motivo.
+El importador distingue dos niveles. Ambos indican el código de la validación (los de las tablas de
+esta sección), fichero, fila, columna y motivo.
 
 - **Errores**: bloquean la carga. Basta uno solo para rechazar la carga entera.
 - **Avisos**: no bloquean la carga. Se muestran en el panel de administración antes de publicar,
@@ -281,7 +282,7 @@ De formato **[interpretación]**:
 | F3 | Todas las filas tienen el mismo número de columnas que la cabecera |
 | F4 | Los identificadores cumplen el patrón de mayúsculas, cifras y guiones |
 | F5 | Los valores de lista (`ownership`, `degree_type`, `subject_type`, `document_type`, `status`, `target_type`, `is_conditional`) son uno de los permitidos |
-| F6 | Decimales, enteros, fechas y SHA-256 tienen el formato indicado |
+| F6 | Decimales, enteros, fechas y SHA-256 tienen el formato indicado, y ningún texto supera la longitud máxima (64 caracteres en identificadores, códigos y siglas; 255 en nombres; 500 en títulos; 1000 en URL y condiciones; 2000 en notas) |
 | F7 | Las columnas marcadas como obligatorias no están vacías |
 | F8 | El checksum de cada fichero coincide con el del manifiesto, y el curso del manifiesto con la carpeta y con `academic_year` de todas las tablas |
 | F9 | Una regla `OPTATIVE_CREDITS` no tiene `target_subject_id` y sí `recognized_ects` |
@@ -294,6 +295,7 @@ De formato **[interpretación]**:
 |---|---|
 | A1 | Regla condicionada (`is_conditional` = `true`) con `condition_text` vacío |
 | A2 | Regla sin módulos en `rule_requirements.csv` (reconocimiento por tener el título) |
+| A3 | Dos reglas alternativas no condicionadas de la misma tabla llevan a la misma asignatura con ECTS distintos. Cuentan los de la regla de menor `rule_id` |
 
 ## 6. Datos de ejemplo
 
