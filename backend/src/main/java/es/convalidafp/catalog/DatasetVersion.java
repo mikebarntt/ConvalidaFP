@@ -19,7 +19,7 @@ import org.hibernate.type.SqlTypes;
  * <p>Todas las filas de datos pertenecen a una versión. Una lectura se fija a una única versión
  * resolviendo primero su {@code id} y filtrando después todo por él, de modo que publicar otra
  * versión mientras tanto no afecta al resultado. La base de datos garantiza que solo hay una
- * versión publicada por curso.
+ * versión publicada por curso: para republicar un curso, la publicada anterior se archiva antes.
  */
 @Entity
 @Table(name = "dataset_version")
@@ -28,7 +28,9 @@ public class DatasetVersion {
   /** Estado de una versión. */
   public enum Status {
     BORRADOR,
-    PUBLICADO
+    PUBLICADO,
+    /** Fue la versión publicada de su curso y otra la sustituyó. Conserva sus datos. */
+    ARCHIVADO
   }
 
   @Id
@@ -55,6 +57,9 @@ public class DatasetVersion {
   @Column(name = "published_at")
   private Instant publishedAt;
 
+  @Column(name = "archived_at")
+  private Instant archivedAt;
+
   protected DatasetVersion() {}
 
   private DatasetVersion(
@@ -75,13 +80,25 @@ public class DatasetVersion {
     return new DatasetVersion(academicYear, manifestDate, reviewer, now);
   }
 
-  /** Publica el borrador. Una versión publicada no vuelve a publicarse. */
+  /** Publica el borrador. Solo se publica un borrador: una versión no se publica dos veces. */
   public void publish(Instant now) {
-    if (status == Status.PUBLICADO) {
-      throw new IllegalStateException("La versión " + id + " ya está publicada");
+    if (status != Status.BORRADOR) {
+      throw new IllegalStateException("Solo se puede publicar un borrador; la versión " + id + " está " + status);
     }
     this.status = Status.PUBLICADO;
     this.publishedAt = now;
+  }
+
+  /**
+   * Archiva la versión publicada para que otra pueda ocupar su lugar. Debe guardarse antes de
+   * publicar la nueva, porque la base de datos solo admite una versión publicada por curso.
+   */
+  public void archive(Instant now) {
+    if (status != Status.PUBLICADO) {
+      throw new IllegalStateException("Solo se puede archivar una versión publicada; la versión " + id + " está " + status);
+    }
+    this.status = Status.ARCHIVADO;
+    this.archivedAt = now;
   }
 
   public boolean isPublished() {
@@ -114,5 +131,9 @@ public class DatasetVersion {
 
   public Instant getPublishedAt() {
     return publishedAt;
+  }
+
+  public Instant getArchivedAt() {
+    return archivedAt;
   }
 }
