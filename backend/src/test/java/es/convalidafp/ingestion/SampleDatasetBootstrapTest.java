@@ -19,7 +19,12 @@ import org.springframework.context.annotation.Import;
  * Arranque local: con la propiedad definida y la base de datos vacía, la aplicación arranca con el
  * dataset de ejemplo ya cargado y publicado.
  */
-@SpringBootTest(properties = "convalidafp.bootstrap.sample-dataset-dir=${convalidafp.dataDir:../data}/sample")
+@SpringBootTest(
+    properties = {
+      "convalidafp.bootstrap.sample-dataset.enabled=true",
+      "convalidafp.bootstrap.sample-dataset.dir=${convalidafp.dataDir:../data}/sample",
+      "test.context=bootstrap"
+    })
 @Import(TestcontainersConfiguration.class)
 class SampleDatasetBootstrapTest {
 

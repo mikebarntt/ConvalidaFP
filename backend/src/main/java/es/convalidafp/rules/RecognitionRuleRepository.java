@@ -12,4 +12,9 @@ public interface RecognitionRuleRepository extends VersionedRepository<Recogniti
    */
   @EntityGraph(attributePaths = {"requirements", "requirements.module", "targetSubject", "source"})
   List<RecognitionRule> findByRecognitionTableIdOrderByCode(Long recognitionTableId);
+
+  /** Todas las reglas de una versión con sus módulos, asignatura destino, fuente y tabla ya cargados. */
+  @EntityGraph(
+      attributePaths = {"requirements", "requirements.module", "targetSubject", "source", "recognitionTable"})
+  List<RecognitionRule> findWithDetailsByDatasetVersionIdOrderByCode(Long datasetVersionId);
 }

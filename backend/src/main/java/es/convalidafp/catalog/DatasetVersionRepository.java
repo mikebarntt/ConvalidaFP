@@ -17,6 +17,9 @@ public interface DatasetVersionRepository extends JpaRepository<DatasetVersion, 
   Optional<DatasetVersion> findFirstByStatusAndAcademicYearLessThanOrderByAcademicYearDesc(
       Status status, String academicYear);
 
+  /** Todas las versiones en un estado, del curso más reciente al más antiguo. */
+  List<DatasetVersion> findByStatusOrderByAcademicYearDesc(Status status);
+
   /** Todas las versiones de un curso, de la más antigua a la más nueva. */
   List<DatasetVersion> findByAcademicYearOrderByIdAsc(String academicYear);
 }

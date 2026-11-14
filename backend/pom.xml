@@ -22,6 +22,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <commons-csv.version>1.14.0</commons-csv.version>
     <jacoco.version>0.8.16</jacoco.version>
+    <springdoc.version>3.2.0</springdoc.version>
+    <bucket4j.version>8.22.0</bucket4j.version>
     <!-- Carpeta data/ del repositorio; los tests del contrato leen data/sample. -->
     <convalidafp.dataDir>${project.basedir}/../data</convalidafp.dataDir>
   </properties>
@@ -51,6 +53,20 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
       <version>${commons-csv.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.bucket4j</groupId>
+      <artifactId>bucket4j_jdk17-core</artifactId>
+      <version>${bucket4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>${springdoc.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mariadb.jdbc</groupId>

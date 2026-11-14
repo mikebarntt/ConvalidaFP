@@ -11,10 +11,10 @@ sale cada reconocimiento.
 
 ## Estado
 
-**Fases 0 a 3 cerradas**: contrato y esqueleto, persistencia, motor de reglas e importador. Al
-arrancar con Docker Compose, el backend crea el esquema y carga y publica el dataset de ejemplo.
-Todavía no se puede simular desde fuera: no hay API (Fase 4) y el frontend muestra una página «en
-construcción».
+**Fases 0 a 4 cerradas**: contrato y esqueleto, persistencia, motor de reglas, importador y API
+pública. Al arrancar con Docker Compose, el backend crea el esquema, carga y publica el dataset de
+ejemplo y ya se puede simular por la API. El frontend sigue mostrando una página «en construcción»
+(Fase 6) y todavía no hay panel de administración (Fase 5) ni informe PDF (Fase 7).
 
 | Fase | Contenido | Estado |
 |---|---|---|
@@ -22,7 +22,7 @@ construcción».
 | 1 | Persistencia: esquema, entidades, repositorios y versionado de datasets | Cerrada |
 | 2 | Motor de reglas: dominio puro, 15 casos límite, cobertura ≥ 90 % | Cerrada |
 | 3 | Importador: validación, borrador, diferencias, publicación versionada | Cerrada |
-| 4 | API pública | Pendiente |
+| 4 | API pública: endpoints, OpenAPI, caché, límite de peticiones, Problem Details | Cerrada |
 | 5 | Administración y seguridad | Pendiente |
 | 6 | Frontend | Pendiente |
 | 7 | PDF, CI/CD y documentación | Pendiente |
@@ -42,6 +42,8 @@ docker compose up --build
 
 - Frontend: <http://localhost:3000>
 - Salud del backend: <http://localhost:8080/actuator/health> (debe responder `"status":"UP"`)
+- Una simulación: <http://localhost:3000/api/v1/simulations?cycle=CF-EJ&degree=UEJ-GP>
+- Documentación de la API: <http://localhost:8080/swagger-ui.html>
 
 Para parar: `Ctrl+C` y después `docker compose down` (añade `-v` para borrar también la base de
 datos).
@@ -53,8 +55,8 @@ Si los puertos 3000 u 8080 están ocupados, cámbialos en `.env`.
 No hace falta instalar Java ni Node: se ejecutan en contenedores.
 
 Backend. Comprueba que el dataset de ejemplo cumple el contrato y cubre los 15 casos límite, y
-prueba la persistencia contra una MariaDB real que los propios tests arrancan en Docker
-(Testcontainers); por eso el comando les da acceso a Docker:
+prueba la persistencia, el importador y la API contra una MariaDB real que los propios tests
+arrancan en Docker (Testcontainers, un único contenedor); por eso el comando les da acceso a Docker:
 
 ```bash
 docker run --rm -v "${PWD}:/repo" -v convalidafp-m2:/root/.m2 -v /var/run/docker.sock:/var/run/docker.sock -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal -w /repo/backend maven:3.9-eclipse-temurin-21 mvn -B verify
@@ -73,6 +75,7 @@ docker run --rm -v "${PWD}/frontend:/app" -w /app node:24-alpine sh -c "npm ci &
 
 ```
 backend/        Java 21 + Spring Boot (Maven). Paquete base es.convalidafp
+  api/          endpoints públicos, caché y adaptador de las entidades al motor
   catalog/      universidades, ciclos, módulos, grados, asignaturas
   rules/        tablas, reglas y documentos fuente
   simulation/   motor de reglas (dominio puro)
@@ -105,6 +108,39 @@ SimulationEngine.simulate(input, table, rules, degree) → SimulationResult
   conjunto concreto de módulos.
 - **Aritmética** en `BigDecimal`, sin redondeos. La misma entrada da siempre el mismo resultado.
 
+## API pública
+
+Solo lectura, en `/api/v1`, para la SPA y para terceros. Está en el paquete `api`.
+
+| Método | Ruta | Uso |
+|---|---|---|
+| GET | `/api/v1/dataset` | Versión publicada, curso y cursos disponibles |
+| GET | `/api/v1/cycles` | Ciclos |
+| GET | `/api/v1/universities` | Universidades |
+| GET | `/api/v1/degrees?university=&cycle=` | Grados; con `cycle`, solo los que tienen fila para ese ciclo |
+| GET | `/api/v1/degrees/{id}/subjects` | Asignaturas de un grado |
+| GET | `/api/v1/simulations?cycle=&degree=` | Simulación |
+| GET | `/api/v1/comparisons?cycle=&degrees=a,b,c` | Comparación de hasta 4 grados |
+| GET | `/api/v1/explore?cycle=` | Grados que reconocen algo, de más a menos ECTS |
+| GET | `/api/v1/sources/{id}` | Documento oficial de una regla |
+
+Todos aceptan `year=AAAA-AA`; sin él se usa el curso vigente publicado.
+
+- **Tres resultados de simulación**, los tres con código 200: `RECOGNIZED`, `NO_AGREEMENT` y
+  `NO_DATA`. Todos llevan el aviso de que el resultado es orientativo.
+- **Una sola versión por petición.** Cada petición obtiene la versión publicada entera, como objeto
+  inmutable en memoria, y calcula todo con ella aunque se publique otra mientras tanto.
+- **Caché.** Las versiones publicadas se guardan en memoria (Caffeine). Publicar o restaurar una
+  versión lanza un evento que vacía la caché una vez confirmada la transacción.
+- **Caché HTTP.** `ETag` ligado a la versión publicada y `Cache-Control: max-age=300, public`;
+  con `If-None-Match` se responde 304.
+- **Límite de peticiones.** 60 por minuto por IP (Bucket4j); al superarlo, 429 con `Retry-After`.
+- **Errores** en Problem Details (RFC 9457), con mensajes en español.
+- **CORS** cerrado por defecto: la SPA y la API se sirven desde el mismo dominio. Otros orígenes se
+  permiten con `convalidafp.api.allowed-origins`.
+- **OpenAPI** en `/v3/api-docs` y Swagger UI en `/swagger-ui.html` (puerto del backend).
+- **Métrica** `convalidafp.simulation` con el tiempo de cada simulación.
+
 ## Importador
 
 Está en el paquete `ingestion`. Todavía no tiene pantalla ni endpoint (Fase 5): se usa desde el
@@ -120,7 +156,9 @@ código y desde el arranque local.
   del mismo curso o, si no la hay, frente al curso anterior publicado. Los cambios en los módulos
   de una regla se muestran como cambio de la regla (`required_modules`).
 - **Arranque local.** Con Docker Compose, si la base de datos está vacía se importan y publican
-  los cursos de `data/sample/`. Si ya hay algún dataset, no se toca nada.
+  los cursos de `data/sample/`. Si ya hay algún dataset, no se toca nada. Esta carga está
+  **desactivada por defecto** en `application.yml`; solo `docker-compose.yml` la activa, con la
+  variable `CONVALIDAFP_BOOTSTRAP_SAMPLE_DATASET_ENABLED`.
 
 Para volver a cargar el ejemplo desde cero: `docker compose down -v` y `docker compose up --build`.
 

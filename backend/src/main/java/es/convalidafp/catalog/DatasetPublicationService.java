@@ -4,6 +4,7 @@ import es.convalidafp.catalog.DatasetVersion.Status;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Optional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,17 +19,20 @@ public class DatasetPublicationService {
 
   private final DatasetVersionRepository versions;
   private final Clock clock;
+  private final ApplicationEventPublisher events;
 
-  public DatasetPublicationService(DatasetVersionRepository versions, Clock clock) {
+  public DatasetPublicationService(
+      DatasetVersionRepository versions, Clock clock, ApplicationEventPublisher events) {
     this.versions = versions;
     this.clock = clock;
+    this.events = events;
   }
 
   /**
    * Publica la versión indicada (un borrador o una archivada) como la vigente de su curso.
    *
    * <p>Todo ocurre en una transacción: si la publicación falla, el archivado de la versión anterior
-   * se deshace y esta sigue publicada.
+   * se deshace y esta sigue publicada. Al terminar lanza un {@link DatasetPublishedEvent}.
    *
    * @throws IllegalArgumentException si la versión no existe
    * @throws IllegalStateException si la versión ya está publicada
@@ -54,6 +58,9 @@ public class DatasetPublicationService {
     }
 
     target.publish(now);
-    return versions.saveAndFlush(target);
+    DatasetVersion published = versions.saveAndFlush(target);
+    // Quien escuche con AFTER_COMMIT lo recibe solo si la transacción se confirma.
+    events.publishEvent(new DatasetPublishedEvent(published.getId(), published.getAcademicYear()));
+    return published;
   }
 }

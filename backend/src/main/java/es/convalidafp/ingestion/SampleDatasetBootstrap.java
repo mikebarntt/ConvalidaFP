@@ -18,12 +18,13 @@ import org.springframework.stereotype.Component;
 /**
  * Arranque local: si la base de datos está vacía, importa y publica el dataset de ejemplo.
  *
- * <p>Solo se activa si se define {@code convalidafp.bootstrap.sample-dataset-dir} (Docker Compose
- * lo hace). Cada subcarpeta es un curso. Si ya existe alguna versión, no hace nada: nunca toca
- * datos cargados por el panel de administración.
+ * <p>Está desactivado por defecto ({@code convalidafp.bootstrap.sample-dataset.enabled=false} en
+ * application.yml). Solo Docker Compose lo activa, con una variable de entorno, para el arranque
+ * local. Cada subcarpeta de {@code convalidafp.bootstrap.sample-dataset.dir} es un curso. Si ya
+ * existe alguna versión, no hace nada: nunca toca datos cargados por el panel de administración.
  */
 @Component
-@ConditionalOnProperty("convalidafp.bootstrap.sample-dataset-dir")
+@ConditionalOnProperty(name = "convalidafp.bootstrap.sample-dataset.enabled", havingValue = "true")
 class SampleDatasetBootstrap implements ApplicationRunner {
 
   private static final Logger log = LoggerFactory.getLogger(SampleDatasetBootstrap.class);
@@ -34,7 +35,7 @@ class SampleDatasetBootstrap implements ApplicationRunner {
   private final DatasetPublicationService publication;
 
   SampleDatasetBootstrap(
-      @Value("${convalidafp.bootstrap.sample-dataset-dir}") Path directory,
+      @Value("${convalidafp.bootstrap.sample-dataset.dir}") Path directory,
       DatasetVersionRepository versions,
       DatasetImportService importer,
       DatasetPublicationService publication) {

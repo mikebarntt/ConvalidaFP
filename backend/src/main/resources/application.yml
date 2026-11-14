@@ -8,9 +8,15 @@ spring:
     hibernate:
       # El esquema lo crea Flyway; Hibernate solo comprueba que las entidades encajan con él.
       ddl-auto: validate
+  mvc:
+    # Errores de la API en formato Problem Details (RFC 9457).
+    problemdetails:
+      enabled: true
 
 server:
   port: 8080
+  # Detrás de Nginx, la IP del cliente llega en X-Forwarded-For (la usa el límite de peticiones).
+  forward-headers-strategy: native
 
 management:
   endpoints:
@@ -27,3 +33,24 @@ convalidafp:
     # Tope legal de reconocimiento como fracción de la carga del grado (regla inquebrantable 4).
     # Es un parámetro de configuración: el motor (Fase 2) lo lee de aquí, nunca de un número fijo.
     max-recognition-ratio: 0.25
+  api:
+    # Segundos que un navegador o un proxy puede reutilizar una respuesta sin volver a preguntar.
+    cache-max-age-seconds: 300
+    rate-limit:
+      # Peticiones por minuto y por IP a la API pública.
+      requests-per-minute: 60
+    # Orígenes, separados por comas, que pueden llamar a la API desde otro dominio (CORS). Vacío = ninguno:
+    # la SPA se sirve desde el mismo dominio que la API.
+    allowed-origins: ""
+  bootstrap:
+    sample-dataset:
+      # Carga del dataset de ejemplo (ficticio) al arrancar con la base de datos vacía. Desactivada
+      # por defecto: solo docker-compose.yml la activa, para el arranque local.
+      enabled: false
+      dir: /data/sample
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
