@@ -3,6 +3,7 @@ package es.convalidafp.persistence;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import es.convalidafp.catalog.DatasetPublicationService;
 import es.convalidafp.catalog.DatasetVersion;
 import es.convalidafp.catalog.DatasetVersion.Status;
 import es.convalidafp.catalog.DatasetVersionRepository;
@@ -51,6 +52,7 @@ class PersistenceIntegrationTest {
 
   @Autowired private EntityManager em;
   @Autowired private DatasetVersionRepository versions;
+  @Autowired private DatasetPublicationService publication;
   @Autowired private UniversityRepository universities;
   @Autowired private FpCycleRepository cycles;
   @Autowired private FpModuleRepository modules;
@@ -335,6 +337,67 @@ class PersistenceIntegrationTest {
   }
 
   @Test
+  @DisplayName("El servicio publica un borrador y archiva la versión que estaba publicada")
+  void serviceRepublishesAYear() {
+    Long replacementId = new SampleDatasetLoader(em).load("2026-27").getId();
+
+    DatasetVersion result = publication.publish(replacementId);
+    em.clear();
+
+    assertThat(result.getId()).isEqualTo(replacementId);
+    assertThat(versions.findByAcademicYearAndStatus("2026-27", Status.PUBLICADO).orElseThrow().getId())
+        .isEqualTo(replacementId);
+    assertThat(versions.findByAcademicYearAndStatus("2026-27", Status.ARCHIVADO).orElseThrow().getId())
+        .isEqualTo(currentId);
+    // El otro curso no se toca.
+    assertThat(versions.findByAcademicYearAndStatus("2025-26", Status.PUBLICADO).orElseThrow().getId())
+        .isEqualTo(previousId);
+  }
+
+  @Test
+  @DisplayName("El servicio restaura una versión archivada y archiva la que estaba publicada")
+  void serviceRestoresAnArchivedVersion() {
+    Long replacementId = new SampleDatasetLoader(em).load("2026-27").getId();
+    publication.publish(replacementId);
+    em.clear();
+    assertThat(versions.findById(currentId).orElseThrow().getStatus()).isEqualTo(Status.ARCHIVADO);
+
+    publication.publish(currentId);
+    em.clear();
+
+    DatasetVersion restored = versions.findById(currentId).orElseThrow();
+    assertThat(restored.getStatus()).isEqualTo(Status.PUBLICADO);
+    assertThat(restored.getArchivedAt()).isNull();
+    assertThat(restored.getPublishedAt()).isNotNull();
+    DatasetVersion replaced = versions.findById(replacementId).orElseThrow();
+    assertThat(replaced.getStatus()).isEqualTo(Status.ARCHIVADO);
+    assertThat(replaced.getArchivedAt()).isNotNull();
+    assertThat(versions.findFirstByStatusOrderByAcademicYearDesc(Status.PUBLICADO).orElseThrow().getId())
+        .isEqualTo(currentId);
+    // La versión restaurada conserva todos sus datos.
+    assertThat(rules.countByDatasetVersionId(currentId)).isEqualTo(54);
+  }
+
+  @Test
+  @DisplayName("El servicio publica el primer borrador de un curso sin nada que archivar")
+  void servicePublishesTheFirstVersionOfAYear() {
+    Long draftId = versions.saveAndFlush(draft("2027-28")).getId();
+
+    publication.publish(draftId);
+
+    assertThat(versions.findByAcademicYearAndStatus("2027-28", Status.PUBLICADO).orElseThrow().getId())
+        .isEqualTo(draftId);
+    assertThat(versions.findByAcademicYearAndStatus("2027-28", Status.ARCHIVADO)).isEmpty();
+  }
+
+  @Test
+  @DisplayName("El servicio rechaza una versión ya publicada o inexistente")
+  void serviceRejectsPublishedOrUnknownVersions() {
+    assertThatThrownBy(() -> publication.publish(currentId)).isInstanceOf(IllegalStateException.class);
+    assertThatThrownBy(() -> publication.publish(-1L)).isInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
   @DisplayName("Una versión nace en borrador y no se publica dos veces")
   void versionLifecycle() {
     DatasetVersion version = draft("2027-28");
@@ -347,7 +410,10 @@ class PersistenceIntegrationTest {
     version.archive(Instant.now());
     assertThat(version.getStatus()).isEqualTo(Status.ARCHIVADO);
     assertThat(version.isPublished()).isFalse();
-    assertThatThrownBy(() -> version.publish(Instant.now())).isInstanceOf(IllegalStateException.class);
+    assertThat(version.getArchivedAt()).isNotNull();
+    version.publish(Instant.now());
+    assertThat(version.isPublished()).isTrue();
+    assertThat(version.getArchivedAt()).isNull();
     assertThatThrownBy(() -> draft("2027")).isInstanceOf(IllegalArgumentException.class);
   }
 

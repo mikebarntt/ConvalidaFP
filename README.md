@@ -88,6 +88,9 @@ El esquema lo crea Flyway al arrancar (`backend/src/main/resources/db/migration/
 - **Versiones de dataset.** Cada curso se guarda como una versión (`dataset_version`) en estado
   `BORRADOR`, `PUBLICADO` o `ARCHIVADO`. La base de datos garantiza una sola versión publicada
   por curso. Al republicar un curso, la versión publicada anterior se archiva: no se borra.
+- **Publicar y restaurar.** `DatasetPublicationService.publish` publica un borrador o restaura una
+  versión archivada, y archiva la que estuviera publicada en ese curso. Es una sola transacción:
+  si la publicación falla, la versión anterior sigue publicada.
 - **Lecturas fijadas a una versión.** Todas las filas llevan `dataset_version_id` y todas las
   consultas de los repositorios lo reciben: una simulación resuelve la versión una vez y lee todo
   de ella, aunque se publique otra mientras tanto.

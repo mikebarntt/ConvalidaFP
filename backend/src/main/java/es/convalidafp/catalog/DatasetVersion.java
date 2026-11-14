@@ -29,7 +29,7 @@ public class DatasetVersion {
   public enum Status {
     BORRADOR,
     PUBLICADO,
-    /** Fue la versión publicada de su curso y otra la sustituyó. Conserva sus datos. */
+    /** Fue la publicada de su curso y otra la sustituyó. Conserva sus datos y puede restaurarse. */
     ARCHIVADO
   }
 
@@ -80,13 +80,19 @@ public class DatasetVersion {
     return new DatasetVersion(academicYear, manifestDate, reviewer, now);
   }
 
-  /** Publica el borrador. Solo se publica un borrador: una versión no se publica dos veces. */
+  /**
+   * Publica un borrador o restaura una versión archivada. Una versión ya publicada no vuelve a
+   * publicarse. {@code publishedAt} guarda la fecha de la última publicación.
+   *
+   * <p>Para respetar la única versión publicada por curso, usar {@link DatasetPublicationService}.
+   */
   public void publish(Instant now) {
-    if (status != Status.BORRADOR) {
-      throw new IllegalStateException("Solo se puede publicar un borrador; la versión " + id + " está " + status);
+    if (status == Status.PUBLICADO) {
+      throw new IllegalStateException("La versión " + id + " ya está publicada");
     }
     this.status = Status.PUBLICADO;
     this.publishedAt = now;
+    this.archivedAt = null;
   }
 
   /**
