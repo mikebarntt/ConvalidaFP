@@ -11,15 +11,16 @@ sale cada reconocimiento.
 
 ## Estado
 
-**Fases 0 (contrato y esqueleto) y 1 (persistencia) cerradas.** Todavía no hay simulador: el
-backend crea el esquema de la base de datos y responde a la comprobación de salud, y el frontend
-muestra una página «en construcción». La base de datos arranca vacía: cargar datasets es la Fase 3.
+**Fases 0 (contrato y esqueleto), 1 (persistencia) y 2 (motor de reglas) cerradas.** El motor ya
+calcula simulaciones, pero todavía no se puede usar desde fuera: no hay API (Fase 4) y la base de
+datos arranca vacía (cargar datasets es la Fase 3). El backend crea el esquema y responde a la
+comprobación de salud, y el frontend muestra una página «en construcción».
 
 | Fase | Contenido | Estado |
 |---|---|---|
 | 0 | Contrato de datos, dataset de ejemplo, esqueleto, Docker Compose | Cerrada |
 | 1 | Persistencia: esquema, entidades, repositorios y versionado de datasets | Cerrada |
-| 2 | Motor de reglas | Pendiente |
+| 2 | Motor de reglas: dominio puro, 15 casos límite, cobertura ≥ 90 % | Cerrada |
 | 3 | Importador | Pendiente |
 | 4 | API pública | Pendiente |
 | 5 | Administración y seguridad | Pendiente |
@@ -56,8 +57,11 @@ prueba la persistencia contra una MariaDB real que los propios tests arrancan en
 (Testcontainers); por eso el comando les da acceso a Docker:
 
 ```bash
-docker run --rm -v "${PWD}:/repo" -v convalidafp-m2:/root/.m2 -v /var/run/docker.sock:/var/run/docker.sock -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal -w /repo/backend maven:3.9-eclipse-temurin-21 mvn -B test
+docker run --rm -v "${PWD}:/repo" -v convalidafp-m2:/root/.m2 -v /var/run/docker.sock:/var/run/docker.sock -e TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal -w /repo/backend maven:3.9-eclipse-temurin-21 mvn -B verify
 ```
+
+`verify` ejecuta todos los tests y además falla si la cobertura de líneas del motor de reglas baja
+del 90 %. El informe queda en `backend/target/site/jacoco/index.html`.
 
 Frontend:
 
@@ -79,6 +83,27 @@ data/sample/    dataset ficticio de ejemplo (dos cursos)
 data/real/      datasets reales (vacío hasta la Fase E)
 CONTRACT.md     contrato de datos: ficheros, columnas, semántica y validaciones
 ```
+
+## Motor de reglas
+
+Está en el paquete `simulation` y es dominio puro: no depende de Spring ni de JPA, no lee de la
+base de datos y no contiene ningún caso particular de universidad. Un test lo vigila.
+
+```
+SimulationEngine.simulate(input, table, rules, degree) → SimulationResult
+```
+
+- **Tres resultados**, los tres válidos: `Recognized` (reconocimiento calculado), `NoAgreement`
+  (verificado que no hay tabla firmada) y `NoData` (sin datos para esa combinación).
+- **Reglas como datos.** Todos los módulos de una regla son obligatorios; dos reglas con la misma
+  asignatura son alternativas y la asignatura cuenta una vez, con la regla de menor identificador
+  como fuente. Los créditos optativos se suman. Las reglas condicionadas van aparte y no suman.
+- **Tope.** `min(suma, 25 % del grado, tope de la tabla)`. El 25 % se lee de la configuración
+  (`convalidafp.simulation.max-recognition-ratio`). Si la suma supera el tope, el total se limita
+  y se marca `capped`; el motor no descarta ninguna asignatura.
+- **Módulos del estudiante.** La v1 asume que tiene el título completo, pero el motor acepta un
+  conjunto concreto de módulos.
+- **Aritmética** en `BigDecimal`, sin redondeos. La misma entrada da siempre el mismo resultado.
 
 ## Persistencia
 
