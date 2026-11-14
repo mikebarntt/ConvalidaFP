@@ -1,8 +1,27 @@
+# Secretos y configuración local
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+
+# Datos locales de MariaDB (el volumen de Docker vive fuera del repositorio; esto cubre copias y volcados)
+db-data/
+mariadb-data/
+mysql-data/
+*.sql.gz
+*.dump
+
+# Compilación y dependencias
 target/
 node_modules/
 dist/
+
+# Editores y sistema
 .idea/
 .vscode/
 *.iml
 .DS_Store
+*.log
