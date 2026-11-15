@@ -11,10 +11,11 @@ sale cada reconocimiento.
 
 ## Estado
 
-**Fases 0 a 4 cerradas**: contrato y esqueleto, persistencia, motor de reglas, importador y API
-pública. Al arrancar con Docker Compose, el backend crea el esquema, carga y publica el dataset de
-ejemplo y ya se puede simular por la API. El frontend sigue mostrando una página «en construcción»
-(Fase 6) y todavía no hay panel de administración (Fase 5) ni informe PDF (Fase 7).
+**Fases 0 a 5 cerradas**: contrato y esqueleto, persistencia, motor de reglas, importador, API
+pública y administración con seguridad. Al arrancar con Docker Compose, el backend crea el esquema,
+carga y publica el dataset de ejemplo y ya se puede simular por la API y administrar los datasets
+por la API de administración. El frontend sigue mostrando una página «en construcción» (Fase 6) y
+todavía no hay informe PDF (Fase 7).
 
 | Fase | Contenido | Estado |
 |---|---|---|
@@ -23,7 +24,7 @@ ejemplo y ya se puede simular por la API. El frontend sigue mostrando una págin
 | 2 | Motor de reglas: dominio puro, 15 casos límite, cobertura ≥ 90 % | Cerrada |
 | 3 | Importador: validación, borrador, diferencias, publicación versionada | Cerrada |
 | 4 | API pública: endpoints, OpenAPI, caché, límite de peticiones, Problem Details | Cerrada |
-| 5 | Administración y seguridad | Pendiente |
+| 5 | Administración y seguridad: login, importaciones, restauración, auditoría | Cerrada |
 | 6 | Frontend | Pendiente |
 | 7 | PDF, CI/CD y documentación | Pendiente |
 | E | Extracción de datos reales | Pendiente |
@@ -43,7 +44,11 @@ docker compose up --build
 - Frontend: <http://localhost:3000>
 - Salud del backend: <http://localhost:8080/actuator/health> (debe responder `"status":"UP"`)
 - Una simulación: <http://localhost:3000/api/v1/simulations?cycle=CF-EJ&degree=UEJ-GP>
-- Documentación de la API: <http://localhost:8080/swagger-ui.html>
+- Documentación de la API: <http://localhost:3000/swagger-ui.html>
+
+Para poder entrar a la API de administración, rellena `ADMIN_USERNAME` y `ADMIN_PASSWORD` en `.env`
+antes del primer arranque (contraseña de al menos 12 caracteres). Si las dejas vacías no se crea
+ningún administrador: no existe ninguna cuenta ni contraseña por defecto.
 
 Para parar: `Ctrl+C` y después `docker compose down` (añade `-v` para borrar también la base de
 datos).
@@ -80,7 +85,7 @@ backend/        Java 21 + Spring Boot (Maven). Paquete base es.convalidafp
   rules/        tablas, reglas y documentos fuente
   simulation/   motor de reglas (dominio puro)
   ingestion/    importador y validación de CSV
-  admin/        login, importaciones, publicación, auditoría
+  admin/        seguridad, login, importaciones, restauración y auditoría
 frontend/       Vue 3 + TypeScript + Vite, Vue Router, Pinia, Tailwind CSS
 data/sample/    dataset ficticio de ejemplo (dos cursos)
 data/real/      datasets reales (vacío hasta la Fase E)
@@ -138,8 +143,43 @@ Todos aceptan `year=AAAA-AA`; sin él se usa el curso vigente publicado.
 - **Errores** en Problem Details (RFC 9457), con mensajes en español.
 - **CORS** cerrado por defecto: la SPA y la API se sirven desde el mismo dominio. Otros orígenes se
   permiten con `convalidafp.api.allowed-origins`.
-- **OpenAPI** en `/v3/api-docs` y Swagger UI en `/swagger-ui.html` (puerto del backend).
+- **OpenAPI** en `/v3/api-docs` y Swagger UI en `/swagger-ui.html`, también a través de Nginx.
 - **Métrica** `convalidafp.simulation` con el tiempo de cada simulación.
+
+## Administración y seguridad
+
+Está en el paquete `admin`. Solo los administradores tienen cuenta; simular no requiere ninguna.
+
+| Método | Ruta | Uso |
+|---|---|---|
+| GET | `/api/v1/admin/csrf` | Token CSRF (no requiere sesión; hace falta para el login) |
+| POST | `/api/v1/admin/login` | Login con los campos de formulario `username` y `password` |
+| POST | `/api/v1/admin/logout` | Cerrar sesión |
+| GET | `/api/v1/admin/session` | Administrador con la sesión iniciada |
+| POST | `/api/v1/admin/imports` | Subir un ZIP (campo `file`); devuelve informe y diferencias; queda en borrador |
+| GET | `/api/v1/admin/imports` | Importaciones, sin informe |
+| GET | `/api/v1/admin/imports/{id}` | Estado e informe guardado de una importación |
+| POST | `/api/v1/admin/imports/{id}/publish` | Publicar el borrador como nueva versión |
+| GET | `/api/v1/admin/versions` | Versiones con su estado |
+| POST | `/api/v1/admin/versions/{id}/restore` | Restaurar una versión archivada |
+| GET | `/api/v1/admin/audit` | Auditoría, lo más reciente primero |
+
+- **Dos zonas.** `/api/v1/admin/**` exige sesión con rol ADMIN: sin login responde 401 y con un
+  usuario sin ese rol, 403. Todo lo demás (API pública, documentación, salud) es abierto, sin sesión
+  y sin cookies.
+- **Sesión y CSRF.** El login crea una sesión en una cookie `HttpOnly` y `SameSite=Strict`. Toda
+  petición POST de administración, incluido el login, debe enviar en la cabecera `X-XSRF-TOKEN` el
+  valor de la cookie `XSRF-TOKEN`. El login devuelve el token nuevo, porque cambia al iniciar sesión.
+- **Primer administrador.** Se crea al arrancar a partir de `ADMIN_USERNAME` y `ADMIN_PASSWORD`,
+  solo si no existe ninguno. Sin esas variables no hay administrador. La contraseña se guarda como
+  hash bcrypt.
+- **Límite de intentos.** Tras 5 fallos de login de un usuario o 20 desde una IP, los nuevos
+  intentos reciben un 429 durante 15 minutos, aunque la contraseña sea correcta.
+- **Informes guardados.** Cada subida, se acepte o no, queda como una importación con sus errores,
+  avisos y diferencias.
+- **Auditoría.** Quién, qué acción (`IMPORTAR`, `PUBLICAR`, `RESTAURAR`, `LOGIN_FALLIDO`), sobre
+  qué versión, cuándo y desde qué IP. Solo admite altas: la base de datos rechaza cambios y borrados.
+- **Errores** en Problem Details, también los 401, 403 y 429.
 
 ## Importador
 
@@ -189,6 +229,25 @@ El esquema lo crea Flyway al arrancar (`backend/src/main/resources/db/migration/
 - El dataset de ejemplo y los casos límite que cubre están en
   [data/sample/README.md](data/sample/README.md).
 - Todo lo que hay en `data/sample/` es ficticio. Ningún dato real se escribe sin documento fuente.
+
+## Pendiente para el despliegue
+
+Lo que la guía de despliegue (Fase 7) debe garantizar en producción:
+
+- **No publicar el puerto 8080.** El backend solo debe ser accesible a través de Nginx. En
+  `docker-compose.yml` el puerto se publica en `127.0.0.1` para el desarrollo local; en producción
+  esa línea se elimina.
+- **Carga del ejemplo desactivada.** No definir `CONVALIDAFP_BOOTSTRAP_SAMPLE_DATASET_ENABLED` (está
+  desactivada por defecto en `application.yml`; solo `docker-compose.yml` la activa). En producción
+  nunca deben publicarse los datos ficticios.
+- **`X-Forwarded-For` solo de proxies de confianza.** El límite de peticiones y el de intentos de
+  login usan la IP del cliente, que el backend toma de esa cabecera cuando la petición llega desde
+  una red privada. Si el backend fuera accesible sin pasar por Nginx, la cabecera se podría
+  falsificar para saltarse los límites.
+- **HTTPS.** Las cookies de sesión y de CSRF se marcan como seguras cuando la petición llega por
+  HTTPS; Nginx debe terminar TLS y enviar `X-Forwarded-Proto`.
+- **Primer administrador.** Definir `ADMIN_USERNAME` y `ADMIN_PASSWORD` como secretos del entorno
+  en el primer arranque, y retirarlos después.
 
 ## Decisiones acordadas para fases siguientes
 

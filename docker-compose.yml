@@ -26,6 +26,9 @@ services:
       SPRING_DATASOURCE_USERNAME: ${DB_USER:-convalidafp}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       LOGGING_STRUCTURED_FORMAT_CONSOLE: ecs
+      # Primer administrador: solo se crea si no existe ninguno y si las dos variables tienen valor.
+      CONVALIDAFP_ADMIN_BOOTSTRAP_USERNAME: ${ADMIN_USERNAME:-}
+      CONVALIDAFP_ADMIN_BOOTSTRAP_PASSWORD: ${ADMIN_PASSWORD:-}
       # Arranque local: si la base de datos está vacía, carga y publica el dataset de ejemplo.
       CONVALIDAFP_BOOTSTRAP_SAMPLE_DATASET_ENABLED: "true"
       CONVALIDAFP_BOOTSTRAP_SAMPLE_DATASET_DIR: /data/sample

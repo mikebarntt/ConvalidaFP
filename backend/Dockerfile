@@ -4,7 +4,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src src
 # Los tests se ejecutan aparte (ver README); aquí solo se empaqueta.
-RUN --mount=type=cache,target=/root/.m2 mvn -B -q -DskipTests package
+RUN --mount=type=cache,target=/root/.m2 mvn -B --no-transfer-progress -DskipTests package
 
 FROM eclipse-temurin:21-jre-alpine
 RUN addgroup -S app && adduser -S app -G app

@@ -8,6 +8,11 @@ spring:
     hibernate:
       # El esquema lo crea Flyway; Hibernate solo comprueba que las entidades encajan con él.
       ddl-auto: validate
+  servlet:
+    multipart:
+      # Tamaño máximo de un dataset subido en ZIP.
+      max-file-size: 20MB
+      max-request-size: 25MB
   mvc:
     # Errores de la API en formato Problem Details (RFC 9457).
     problemdetails:
@@ -17,6 +22,14 @@ server:
   port: 8080
   # Detrás de Nginx, la IP del cliente llega en X-Forwarded-For (la usa el límite de peticiones).
   forward-headers-strategy: native
+  servlet:
+    session:
+      # Solo los administradores tienen sesión. La cookie no es legible desde JavaScript y no se
+      # envía en peticiones que vengan de otros sitios.
+      timeout: 30m
+      cookie:
+        http-only: true
+        same-site: strict
 
 management:
   endpoints:
@@ -42,6 +55,19 @@ convalidafp:
     # Orígenes, separados por comas, que pueden llamar a la API desde otro dominio (CORS). Vacío = ninguno:
     # la SPA se sirve desde el mismo dominio que la API.
     allowed-origins: ""
+  admin:
+    bootstrap:
+      # Primer administrador: se crea al arrancar solo si no existe ninguno y solo si se dan las dos
+      # variables de entorno (CONVALIDAFP_ADMIN_BOOTSTRAP_USERNAME y _PASSWORD). Vacío = no se crea.
+      # Nunca hay una contraseña por defecto.
+      username: ""
+      password: ""
+    login:
+      # Intentos fallidos de login permitidos, por usuario y por IP, antes de bloquear nuevos
+      # intentos durante lock-minutes.
+      max-failures-per-user: 5
+      max-failures-per-ip: 20
+      lock-minutes: 15
   bootstrap:
     sample-dataset:
       # Carga del dataset de ejemplo (ficticio) al arrancar con la base de datos vacía. Desactivada

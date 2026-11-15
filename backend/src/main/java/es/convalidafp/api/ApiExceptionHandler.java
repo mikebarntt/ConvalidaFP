@@ -33,6 +33,11 @@ class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     return problem(HttpStatus.BAD_REQUEST, ex.getMessage());
   }
 
+  @ExceptionHandler(ConflictException.class)
+  ProblemDetail conflict(ConflictException ex) {
+    return problem(HttpStatus.CONFLICT, ex.getMessage());
+  }
+
   /** Cualquier error no previsto: se registra y se responde sin detalles internos. */
   @ExceptionHandler(Exception.class)
   ProblemDetail unexpected(Exception ex) {
@@ -77,6 +82,8 @@ class ApiExceptionHandler extends ResponseEntityExceptionHandler {
       case 404 -> "No encontrado";
       case 405 -> "Método no permitido";
       case 406 -> "Formato no disponible";
+      case 409 -> "Conflicto";
+      case 413 -> "Fichero demasiado grande";
       case 429 -> "Demasiadas peticiones";
       default -> status.is5xxServerError() ? "Error interno" : "Error en la petición";
     };
