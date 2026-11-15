@@ -11,6 +11,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -58,6 +59,13 @@ class ApiExceptionHandler extends ResponseEntityExceptionHandler {
       NoResourceFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
     ProblemDetail body = problem(HttpStatus.NOT_FOUND, "La dirección solicitada no existe.");
     return handleExceptionInternal(ex, body, headers, status, request);
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleMaxUploadSizeExceededException(
+      MaxUploadSizeExceededException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    ProblemDetail body = problem(HttpStatus.CONTENT_TOO_LARGE, "El fichero supera el tamaño máximo permitido.");
+    return handleExceptionInternal(ex, body, headers, HttpStatus.CONTENT_TOO_LARGE, request);
   }
 
   /** El resto de errores de Spring MVC conservan su detalle, con el título en español. */

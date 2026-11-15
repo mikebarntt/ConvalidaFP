@@ -11,8 +11,8 @@ spring:
   servlet:
     multipart:
       # Tamaño máximo de un dataset subido en ZIP.
-      max-file-size: 20MB
-      max-request-size: 25MB
+      max-file-size: 25MB
+      max-request-size: 26MB
   mvc:
     # Errores de la API en formato Problem Details (RFC 9457).
     problemdetails:
@@ -63,9 +63,9 @@ convalidafp:
       username: ""
       password: ""
     login:
-      # Intentos fallidos de login permitidos, por usuario y por IP, antes de bloquear nuevos
-      # intentos durante lock-minutes.
-      max-failures-per-user: 5
+      # Intentos fallidos de login permitidos antes de bloquear nuevos intentos durante lock-minutes:
+      # de un mismo usuario desde una misma IP, y desde una misma IP con cualquier usuario.
+      max-failures-per-user-and-ip: 5
       max-failures-per-ip: 20
       lock-minutes: 15
   bootstrap:

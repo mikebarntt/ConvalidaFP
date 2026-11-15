@@ -9,43 +9,49 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * Límite de intentos fallidos de login, por usuario y por IP.
+ * Límite de intentos fallidos de login.
  *
- * <p>Tras demasiados fallos, los nuevos intentos se rechazan sin comprobar la contraseña hasta que
- * pase el tiempo de bloqueo, contado desde el primer fallo. Un login correcto pone a cero el
- * contador de ese usuario.
+ * <ul>
+ *   <li><b>Por usuario e IP juntos</b>: demasiados fallos de un usuario desde una IP bloquean a ese
+ *       usuario solo desde esa IP. Nadie puede bloquear a un administrador desde otra IP.
+ *   <li><b>Por IP</b>: demasiados fallos desde una IP, sea cual sea el usuario, bloquean esa IP.
+ * </ul>
+ *
+ * <p>Mientras dura el bloqueo, los intentos se rechazan sin comprobar la contraseña. El tiempo se
+ * cuenta desde el primer fallo. Un login correcto pone a cero el contador de ese usuario en esa IP.
  */
 @Component
 public class LoginAttemptLimiter {
 
-  private final int maxFailuresPerUser;
+  private final int maxFailuresPerUserAndIp;
   private final int maxFailuresPerIp;
-  private final Cache<String, AtomicInteger> failuresByUser;
+  private final Cache<String, AtomicInteger> failuresByUserAndIp;
   private final Cache<String, AtomicInteger> failuresByIp;
 
   LoginAttemptLimiter(
-      @Value("${convalidafp.admin.login.max-failures-per-user}") int maxFailuresPerUser,
+      @Value("${convalidafp.admin.login.max-failures-per-user-and-ip}") int maxFailuresPerUserAndIp,
       @Value("${convalidafp.admin.login.max-failures-per-ip}") int maxFailuresPerIp,
       @Value("${convalidafp.admin.login.lock-minutes}") long lockMinutes) {
-    this.maxFailuresPerUser = maxFailuresPerUser;
+    this.maxFailuresPerUserAndIp = maxFailuresPerUserAndIp;
     this.maxFailuresPerIp = maxFailuresPerIp;
     Duration lock = Duration.ofMinutes(lockMinutes);
-    this.failuresByUser = Caffeine.newBuilder().expireAfterWrite(lock).maximumSize(100_000).build();
+    this.failuresByUserAndIp = Caffeine.newBuilder().expireAfterWrite(lock).maximumSize(100_000).build();
     this.failuresByIp = Caffeine.newBuilder().expireAfterWrite(lock).maximumSize(100_000).build();
   }
 
   /** ¿Hay que rechazar este intento sin comprobar la contraseña? */
   public boolean isBlocked(String ip, String username) {
-    return count(failuresByIp, ip) >= maxFailuresPerIp || count(failuresByUser, userKey(username)) >= maxFailuresPerUser;
+    return count(failuresByIp, ip) >= maxFailuresPerIp
+        || count(failuresByUserAndIp, userAndIpKey(username, ip)) >= maxFailuresPerUserAndIp;
   }
 
   public void recordFailure(String ip, String username) {
     failuresByIp.get(ip, k -> new AtomicInteger()).incrementAndGet();
-    failuresByUser.get(userKey(username), k -> new AtomicInteger()).incrementAndGet();
+    failuresByUserAndIp.get(userAndIpKey(username, ip), k -> new AtomicInteger()).incrementAndGet();
   }
 
-  public void recordSuccess(String username) {
-    failuresByUser.invalidate(userKey(username));
+  public void recordSuccess(String ip, String username) {
+    failuresByUserAndIp.invalidate(userAndIpKey(username, ip));
   }
 
   private static int count(Cache<String, AtomicInteger> cache, String key) {
@@ -54,8 +60,8 @@ public class LoginAttemptLimiter {
   }
 
   /** El usuario se compara sin distinguir mayúsculas y con una longitud acotada. */
-  private static String userKey(String username) {
-    String key = username == null ? "" : username.trim().toLowerCase(Locale.ROOT);
-    return key.length() > 100 ? key.substring(0, 100) : key;
+  private static String userAndIpKey(String username, String ip) {
+    String user = username == null ? "" : username.trim().toLowerCase(Locale.ROOT);
+    return (user.length() > 100 ? user.substring(0, 100) : user) + "|" + ip;
   }
 }

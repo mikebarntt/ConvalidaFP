@@ -86,7 +86,7 @@ public class SecurityConfiguration {
                     .loginProcessingUrl(LOGIN_URL)
                     .successHandler(
                         (request, response, authentication) -> {
-                          limiter.recordSuccess(authentication.getName());
+                          limiter.recordSuccess(request.getRemoteAddr(), authentication.getName());
                           // Al iniciar sesión el token CSRF cambia: se entrega ya el nuevo.
                           CsrfToken token = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
                           Map<String, Object> body = new LinkedHashMap<>();
@@ -151,8 +151,8 @@ public class SecurityConfiguration {
   }
 
   /**
-   * Rechaza un intento de login, antes de comprobar la contraseña, si ese usuario o esa IP acumulan
-   * demasiados fallos.
+   * Rechaza un intento de login, antes de comprobar la contraseña, si ese usuario desde esa IP, o
+   * esa IP con cualquier usuario, acumulan demasiados fallos.
    */
   static final class LoginThrottleFilter extends OncePerRequestFilter {
 

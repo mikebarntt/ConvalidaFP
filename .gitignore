@@ -2,6 +2,8 @@
 .env
 .env.*
 !.env.example
+# Valores solo de prueba para el entorno de tests de extremo a extremo.
+!.env.e2e
 *.pem
 *.key
 *.p12
@@ -25,3 +27,7 @@ dist/
 *.iml
 .DS_Store
 *.log
+
+# Playwright
+frontend/test-results/
+frontend/playwright-report/

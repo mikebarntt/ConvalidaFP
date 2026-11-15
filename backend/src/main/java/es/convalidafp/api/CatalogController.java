@@ -112,6 +112,16 @@ class CatalogController {
     return caching.respond(request, dataset, dataset.subjectsByDegree().get(id));
   }
 
+  @GetMapping("/sources")
+  @Operation(summary = "Documentos oficiales usados en el curso")
+  ResponseEntity<List<SourceDto>> sources(
+      @Parameter(description = YEAR_DESCRIPTION) @RequestParam(required = false) String year, WebRequest request) {
+    PublishedDataset dataset = datasets.resolve(year);
+    List<SourceDto> body =
+        dataset.sources().values().stream().sorted(java.util.Comparator.comparing(SourceDto::id)).toList();
+    return caching.respond(request, dataset, body);
+  }
+
   @GetMapping("/sources/{id}")
   @Operation(summary = "Documento oficial del que sale una tabla o una regla")
   ResponseEntity<SourceDto> source(

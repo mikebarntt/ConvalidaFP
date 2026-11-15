@@ -98,24 +98,48 @@ class AdminLoginTest extends AdminTestSupport {
   }
 
   @Test
-  @DisplayName("Límite por usuario: tras 5 fallos, ni la contraseña correcta entra, venga de la IP que venga")
-  void tooManyFailuresLockTheUser() throws Exception {
+  @DisplayName("Límite por usuario e IP: tras 5 fallos desde una IP, ese usuario no entra desde esa IP")
+  void tooManyFailuresLockTheUserFromThatIp() throws Exception {
     String username = "admin-bloqueado";
     String password = "otra-clave-de-prueba-9876543210";
     users.save(new AdminUser(username, passwordEncoder.encode(password), Instant.now()));
+    String attackerIp = newIp();
 
     for (int i = 1; i <= 5; i++) {
-      // Cada fallo llega desde una IP distinta: el límite es del usuario, no de la IP.
-      assertThat(attemptLogin(username, "clave-mala-" + i, newIp()).getResponse().getStatus()).as("fallo " + i).isEqualTo(401);
+      assertThat(attemptLogin(username, "clave-mala-" + i, attackerIp).getResponse().getStatus())
+          .as("fallo " + i)
+          .isEqualTo(401);
     }
 
-    MockHttpServletResponse locked = attemptLogin(username, password, newIp()).getResponse();
+    // Desde esa IP ya no entra ni con la contraseña correcta.
+    MockHttpServletResponse locked = attemptLogin(username, password, attackerIp).getResponse();
     assertProblem(locked, 429, "Demasiados intentos fallidos");
     assertThat(locked.getHeader("Retry-After")).isEqualTo("900");
     // El usuario se compara sin distinguir mayúsculas.
-    assertThat(attemptLogin(username.toUpperCase(), password, newIp()).getResponse().getStatus()).isEqualTo(429);
-    // Los demás administradores no se ven afectados.
-    login(ADMIN, PASSWORD, newIp());
+    assertThat(attemptLogin(username.toUpperCase(), password, attackerIp).getResponse().getStatus()).isEqualTo(429);
+    // Otro usuario desde esa misma IP no está bloqueado (la IP lleva 5 fallos, lejos de su límite de 20).
+    login(ADMIN, PASSWORD, attackerIp);
+  }
+
+  @Test
+  @DisplayName("Nadie puede bloquear a un administrador desde otra IP")
+  void anAdminCannotBeLockedOutFromAnotherIp() throws Exception {
+    String username = "admin-acosado";
+    String password = "clave-de-prueba-del-acosado-123";
+    users.save(new AdminUser(username, passwordEncoder.encode(password), Instant.now()));
+
+    // Un atacante falla muchas veces con el usuario del administrador, incluso cambiando de IP.
+    String firstIp = newIp();
+    String secondIp = newIp();
+    for (int i = 1; i <= 6; i++) {
+      attemptLogin(username, "clave-mala-" + i, firstIp);
+      attemptLogin(username, "clave-mala-" + i, secondIp);
+    }
+    assertThat(attemptLogin(username, password, firstIp).getResponse().getStatus()).isEqualTo(429);
+    assertThat(attemptLogin(username, password, secondIp).getResponse().getStatus()).isEqualTo(429);
+
+    // El administrador, desde su propia IP, entra con normalidad.
+    login(username, password, newIp());
   }
 
   @Test
