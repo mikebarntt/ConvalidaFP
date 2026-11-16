@@ -38,6 +38,10 @@ class CatalogApiTest extends ApiTestSupport {
     assertThat(first.get("name").asString()).isEqualTo("Ciclo Ficticio de Desarrollo de Aplicaciones de Ejemplo");
     assertThat(first.get("regulationRef").asString()).isEqualTo("Norma Ficticia 01/2010");
     assertThat(first.get("totalEcts").decimalValue()).isEqualByComparingTo("120");
+    // help_text: ayuda para distinguir dos ciclos con el mismo nombre y distinta normativa (opcional).
+    assertThat(first.get("helpText").asString()).contains("Norma Ficticia 01/2010");
+    assertThat(cycles.get(1).get("helpText").asString()).contains("Norma Ficticia 02/2024");
+    assertThat(cycles.get(2).get("helpText").isNull()).isTrue();
   }
 
   @Test

@@ -170,6 +170,9 @@ class SampleDatasetContractTest {
     Row updated = row(current, "fp_cycles.csv", "cycle_id", "CF-EJ-2024");
     assertThat(old.get("name")).isEqualTo(updated.get("name"));
     assertThat(old.get("regulation_ref")).isNotEqualTo(updated.get("regulation_ref"));
+    // Cada uno explica en una frase cómo saber cuál es el tuyo (help_text).
+    assertThat(old.get("help_text")).isNotBlank().isNotEqualTo(updated.get("help_text"));
+    assertThat(updated.get("help_text")).isNotBlank();
     assertThat(tables(r -> r.get("cycle_id").equals("CF-EJ-2024"))).isNotEmpty();
   }
 

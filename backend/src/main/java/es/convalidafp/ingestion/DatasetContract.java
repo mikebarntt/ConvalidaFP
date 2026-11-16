@@ -26,7 +26,7 @@ public final class DatasetContract {
   static {
     Map<String, List<String>> headers = new LinkedHashMap<>();
     headers.put(UNIVERSITIES, List.of("university_id", "name", "short_name", "ownership", "region", "website_url"));
-    headers.put(CYCLES, List.of("cycle_id", "name", "acronym", "professional_family", "regulation_ref", "total_ects"));
+    headers.put(CYCLES, List.of("cycle_id", "name", "acronym", "professional_family", "regulation_ref", "total_ects", "help_text"));
     headers.put(MODULES, List.of("module_id", "cycle_id", "official_code", "name", "ects", "course_year"));
     headers.put(
         DEGREES,

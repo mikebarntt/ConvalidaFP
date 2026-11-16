@@ -1,20 +1,25 @@
 # ConvalidaFP
 
-Simulador de convalidaciones FP → Grado: dado un ciclo de FP de grado superior y un grado
-universitario, calcula qué asignaturas se reconocen, cuántos ECTS suman y de qué documento oficial
-sale cada reconocimiento.
+Simulador de convalidaciones FP → Grado. Quien ha estudiado un ciclo de FP de grado superior elige
+su ciclo y un grado universitario, y ConvalidaFP le dice **qué asignaturas se le reconocen, cuántos
+ECTS suman, cuánto le queda por cursar y de qué documento oficial sale cada reconocimiento**
+(documento, página y fragmento literal). Puede comparar hasta 4 grados, explorar todos los que
+reconocen algo y descargar el resultado en PDF. Los datos son tablas oficiales de reconocimiento
+cargadas como datasets versionados desde un panel de administración.
 
-> **Este código lo generó Fable 5.2 (Anthropic) a partir de la especificación del proyecto.**
+> **Este código lo generó Fable 5.2 (Anthropic) a partir de la especificación del proyecto.** La
+> especificación la escribió el dueño del proyecto y es la fuente de verdad; el código se generó
+> fase a fase a partir de ella.
 
 > El resultado de una simulación es orientativo y no vinculante: la resolución final corresponde a
 > la universidad y el reconocimiento de créditos conlleva tasas.
 
 ## Estado
 
-**Fases 0 a 6 cerradas**: contrato y esqueleto, persistencia, motor de reglas, importador, API
-pública, administración con seguridad y frontend. Al arrancar con Docker Compose, el backend crea el
-esquema, carga y publica el dataset de ejemplo y ya se puede simular, comparar, explorar y
-administrar los datasets desde el navegador. Todavía no hay informe PDF (Fase 7).
+**Fases 0 a 7 cerradas**: contrato y esqueleto, persistencia, motor de reglas, importador, API
+pública, administración con seguridad, frontend, y PDF, CI/CD y documentación. Solo queda la Fase E:
+extraer los datos reales de los documentos oficiales. Hasta entonces, la aplicación funciona con el
+dataset de ejemplo, que es ficticio.
 
 | Fase | Contenido | Estado |
 |---|---|---|
@@ -25,12 +30,16 @@ administrar los datasets desde el navegador. Todavía no hay informe PDF (Fase 7
 | 4 | API pública: endpoints, OpenAPI, caché, límite de peticiones, Problem Details | Cerrada |
 | 5 | Administración y seguridad: login, importaciones, restauración, auditoría | Cerrada |
 | 6 | Frontend: simulador, comparador, explorador, fuentes y panel de administración | Cerrada |
-| 7 | PDF, CI/CD y documentación | Pendiente |
+| 7 | Informe PDF, CI/CD, despliegue con HTTPS, ayuda para elegir ciclo, menú móvil, documentación | Cerrada |
 | E | Extracción de datos reales | Pendiente |
 
-## Arranque
+## Arranque en 3 comandos
 
-Solo hace falta Docker Desktop (o Docker con Compose). Desde la carpeta del proyecto:
+Solo hace falta Git y Docker Desktop (o Docker con Compose):
+
+```bash
+git clone https://github.com/mikebarntt/ConvalidaFP.git && cd ConvalidaFP
+```
 
 ```bash
 cp .env.example .env
@@ -39,6 +48,9 @@ cp .env.example .env
 ```bash
 docker compose up --build
 ```
+
+Este arranque es para **desarrollo local**: carga el dataset de ejemplo (ficticio). Para un servidor
+de verdad, ver [Despliegue](#despliegue).
 
 - Simulador: <http://localhost:3000>
 - Panel de administración: <http://localhost:3000/admin>
@@ -54,6 +66,54 @@ Para parar: `Ctrl+C` y después `docker compose down` (añade `-v` para borrar t
 datos).
 
 Si los puertos 3000 u 8080 están ocupados, cámbialos en `.env`.
+
+## Arquitectura
+
+```
+                 Navegador
+                     │  HTTPS (producción) · HTTP en local
+                     ▼
+     ┌──────────────────────────────┐
+     │ Caddy (solo en producción)   │  TLS con Let's Encrypt, HSTS, X-Forwarded-For real
+     └──────────────┬───────────────┘
+                    ▼
+     ┌──────────────────────────────┐
+     │ frontend · Nginx             │  SPA Vue 3 + proxy de /api, /v3/api-docs y /swagger-ui
+     └──────────────┬───────────────┘
+                    ▼  /api/v1/**
+     ┌──────────────────────────────┐
+     │ backend · Spring Boot (Java) │  API pública, PDF, administración, importador,
+     │                              │  motor de reglas puro, caché en memoria
+     └──────────────┬───────────────┘
+                    ▼  JDBC (red interna)
+     ┌──────────────────────────────┐
+     │ MariaDB                      │  esquema con Flyway, datasets versionados por curso
+     └──────────────────────────────┘
+```
+
+- **Datos como datasets versionados.** Cada curso es un dataset (9 CSV + `manifest.json`,
+  [CONTRACT.md](CONTRACT.md)). Se importa como borrador, se valida, se publica y la versión
+  anterior se archiva; se puede restaurar.
+- **Motor de reglas puro** (`simulation`): sin Spring ni base de datos, la misma entrada da siempre
+  el mismo resultado. La API resuelve una versión publicada, la carga en memoria y le pasa los datos.
+- **Una sola procedencia.** La SPA y la API se sirven desde el mismo dominio: sin CORS y sin
+  cookies para el visitante (solo los administradores tienen sesión).
+- **CI/CD** en GitHub Actions: ver [Integración continua](#integración-continua).
+
+## Cargar un dataset
+
+1. Prepara la carpeta del curso según [CONTRACT.md](CONTRACT.md): `data/real/<curso>/` con los 9
+   CSV (UTF-8 sin BOM) y el `manifest.json` con el SHA-256 de cada fichero. Ningún dato sin
+   documento fuente.
+2. Comprime la carpeta en un ZIP (hasta 25 MB).
+3. Entra en `/admin` con un administrador, ve a *Importaciones* y sube el ZIP.
+4. Revisa el informe: los **errores** (con código, fichero, fila y columna) rechazan la carga; los
+   **avisos** no bloquean, pero conviene leerlos. Revisa también las diferencias con la versión
+   publicada.
+5. **Publicar**. La web y la API pasan a usar esa versión al instante. Si algo sale mal, en
+   *Importaciones* se puede **restaurar** la versión anterior.
+
+En local, `docker compose up` ya carga y publica `data/sample/` si la base de datos está vacía.
 
 ## Tests
 
@@ -80,11 +140,57 @@ Extremo a extremo (Playwright, en escritorio y en móvil, con comprobación de a
 AA con axe y actualización de las capturas en `docs/screenshots/`). Arranca un entorno aparte en el
 puerto 3100 con `.env.e2e`, lanza los tests y después lo borra:
 
+Playwright usa la red del anfitrión para abrir la aplicación en `localhost`: el portapapeles del
+navegador solo funciona en un contexto seguro, y `localhost` lo es (en Docker Desktop hay que tener
+activada la red del anfitrión, *host networking*).
+
 ```bash
 docker compose -p convalidafp-e2e --env-file .env.e2e up -d --build --wait
-docker run --rm --ipc=host -v "${PWD}:/repo" -w /repo/frontend -e E2E_BASE_URL=http://host.docker.internal:3100 mcr.microsoft.com/playwright:v1.58.2-noble npx playwright test
+docker run --rm --ipc=host --network host -v "${PWD}:/repo" -w /repo/frontend -e E2E_BASE_URL=http://localhost:3100 mcr.microsoft.com/playwright:v1.65.1-noble npx playwright test
 docker compose -p convalidafp-e2e --env-file .env.e2e down -v
 ```
+
+Configuración de producción (HTTPS, sin puerto 8080, sin datos de ejemplo, `X-Forwarded-For` solo
+de proxies de confianza). Arranca `docker-compose.prod.yml` en tu equipo con `localhost` como
+dominio, lo comprueba y lo borra; necesita los puertos 80 y 443 libres:
+
+```bash
+bash deploy/smoke-test.sh
+```
+
+## Integración continua
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) se ejecuta en cada push y en cada pull
+request:
+
+| Trabajo | Qué hace |
+|---|---|
+| Backend | `mvn verify`: tests con Testcontainers (MariaDB real) y cobertura del motor ≥ 90 % |
+| Frontend | Formato, lint, tests unitarios y compilación |
+| Extremo a extremo | Arranca la aplicación con `.env.e2e` y ejecuta Playwright en escritorio y móvil, con axe |
+| Imágenes Docker | Construye las imágenes del backend y del frontend (no las publica) |
+| Configuración de producción | Valida el Caddyfile, comprueba `docker-compose.prod.yml` y lanza la prueba de humo |
+
+## Despliegue
+
+Guía paso a paso para un servidor (AWS Lightsail o EC2) en [docs/DEPLOY.md](docs/DEPLOY.md). En
+resumen, en el servidor:
+
+```bash
+cp .env.prod.example .env.prod
+```
+
+```bash
+docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+```
+
+| Requisito | Cómo lo cumple `docker-compose.prod.yml` |
+|---|---|
+| HTTPS | Caddy termina TLS (Let's Encrypt), redirige HTTP a HTTPS, envía HSTS y pasa `X-Forwarded-Proto`; las cookies salen `Secure` |
+| Sin puerto 8080 | Solo Caddy publica puertos (80 y 443) |
+| Sin datos de ejemplo | No define `CONVALIDAFP_BOOTSTRAP_SAMPLE_DATASET_ENABLED` ni monta `data/sample` |
+| `X-Forwarded-For` de confianza | Caddy sustituye la cabecera del cliente; el backend solo la acepta de Caddy y Nginx (IP fijas, `SERVER_TOMCAT_REMOTEIP_INTERNAL_PROXIES`) |
+| Primer administrador | `ADMIN_USERNAME` y `ADMIN_PASSWORD` solo en el primer arranque |
 
 ## Estructura
 
@@ -104,7 +210,12 @@ frontend/          Vue 3 + TypeScript + Vite, Vue Router, Pinia, Tailwind CSS
 docs/screenshots/  capturas de todas las pantallas en escritorio y en móvil
 data/sample/       dataset ficticio de ejemplo (dos cursos)
 data/real/         datasets reales (vacío hasta la Fase E)
+deploy/            Caddyfile y comprobaciones de la configuración de producción
+docs/DEPLOY.md     guía de despliegue en AWS Lightsail o EC2
+.github/workflows/ integración continua
 CONTRACT.md        contrato de datos: ficheros, columnas, semántica y validaciones
+docker-compose.yml       desarrollo local (con el dataset de ejemplo)
+docker-compose.prod.yml  producción (HTTPS, sin datos de ejemplo)
 ```
 
 ## Frontend
@@ -114,7 +225,7 @@ Aplicación de una sola página (Vue 3 + TypeScript) servida por Nginx junto con
 | Ruta | Pantalla |
 |---|---|
 | `/` | Inicio: elegir ciclo de FP, universidad y grado (con su estado de tabla) |
-| `/resultado?ciclo=&grado=` | Resultado de la simulación, fuentes por asignatura y asignaturas restantes |
+| `/resultado?ciclo=&grado=` | Resultado de la simulación, fuentes por asignatura, asignaturas restantes e informe PDF |
 | `/comparar?ciclo=&grados=a,b` | Comparador de hasta 4 grados lado a lado |
 | `/explorar?ciclo=` | Explorador de los grados que reconocen créditos, de más a menos ECTS |
 | `/fuentes` | Fuentes oficiales del curso vigente, última actualización y metodología |
@@ -131,6 +242,12 @@ Aplicación de una sola página (Vue 3 + TypeScript) servida por Nginx junto con
   está siempre visible. Cuando el resultado viene limitado por el tope (`capped`), la lista se
   titula «Reconocibles hasta el tope de X ECTS» y explica qué suma la tabla, cuál es el límite y
   que la universidad decide qué asignaturas entran.
+- **Ayuda para elegir el ciclo.** Si dos ciclos tienen el mismo nombre y distinta normativa, cada
+  uno muestra en una frase cómo saber cuál es el tuyo. El texto sale del dataset (`help_text` en
+  `fp_cycles.csv`); si está vacío no se muestra nada.
+- **Informe PDF.** «Descargar informe PDF» en la pantalla de resultado: el mismo desglose, con el
+  aviso de que es orientativo.
+- **Menú del móvil** plegado en un botón «Menú» con un desplegable; en pantallas anchas va en línea.
 - **Tres resultados claros.** Distingue entre reconocimiento calculado (con barra de ECTS y marca
   del tope), convenio descartado («No existe tabla de reconocimiento firmada») y combinación aún no
   comprobada («Todavía no tenemos datos de esta combinación»).
@@ -175,6 +292,7 @@ Solo lectura, en `/api/v1`, para la SPA y para terceros. Está en el paquete `ap
 | GET | `/api/v1/degrees?university=&cycle=` | Grados; con `cycle`, solo los que tienen fila para ese ciclo |
 | GET | `/api/v1/degrees/{id}/subjects` | Asignaturas de un grado |
 | GET | `/api/v1/simulations?cycle=&degree=` | Simulación |
+| GET | `/api/v1/simulations/report.pdf?cycle=&degree=` | Informe PDF de la simulación (OpenPDF) |
 | GET | `/api/v1/comparisons?cycle=&degrees=a,b,c` | Comparación de hasta 4 grados |
 | GET | `/api/v1/explore?cycle=` | Grados que reconocen algo, de más a menos ECTS |
 | GET | `/api/v1/sources` | Documentos oficiales del curso |
@@ -194,6 +312,10 @@ Todos aceptan `year=AAAA-AA`; sin él se usa el curso vigente publicado.
 - **Errores** en Problem Details (RFC 9457), con mensajes en español.
 - **CORS** cerrado por defecto: la SPA y la API se sirven desde el mismo dominio. Otros orígenes se
   permiten con `convalidafp.api.allowed-origins`.
+- **Informe PDF** con el mismo desglose que la pantalla: cifra, tope, asignaturas por curso con su
+  fuente (documento, página y fragmento literal), condicionados aparte, restantes y el aviso. Se
+  descarga como `convalidafp-<ciclo>-<grado>.pdf`, con las mismas cabeceras de caché; los errores
+  siguen en Problem Details.
 - **OpenAPI** en `/v3/api-docs` y Swagger UI en `/swagger-ui.html`, también a través de Nginx.
 - **Métrica** `convalidafp.simulation` con el tiempo de cada simulación.
 
@@ -283,25 +405,6 @@ El esquema lo crea Flyway al arrancar (`backend/src/main/resources/db/migration/
 - El dataset de ejemplo y los casos límite que cubre están en
   [data/sample/README.md](data/sample/README.md).
 - Todo lo que hay en `data/sample/` es ficticio. Ningún dato real se escribe sin documento fuente.
-
-## Pendiente para el despliegue
-
-Lo que la guía de despliegue (Fase 7) debe garantizar en producción:
-
-- **No publicar el puerto 8080.** El backend solo debe ser accesible a través de Nginx. En
-  `docker-compose.yml` el puerto se publica en `127.0.0.1` para el desarrollo local; en producción
-  esa línea se elimina.
-- **Carga del ejemplo desactivada.** No definir `CONVALIDAFP_BOOTSTRAP_SAMPLE_DATASET_ENABLED` (está
-  desactivada por defecto en `application.yml`; solo `docker-compose.yml` la activa). En producción
-  nunca deben publicarse los datos ficticios.
-- **`X-Forwarded-For` solo de proxies de confianza.** El límite de peticiones y el de intentos de
-  login usan la IP del cliente, que el backend toma de esa cabecera cuando la petición llega desde
-  una red privada. Si el backend fuera accesible sin pasar por Nginx, la cabecera se podría
-  falsificar para saltarse los límites.
-- **HTTPS.** Las cookies de sesión y de CSRF se marcan como seguras cuando la petición llega por
-  HTTPS; Nginx debe terminar TLS y enviar `X-Forwarded-Proto`.
-- **Primer administrador.** Definir `ADMIN_USERNAME` y `ADMIN_PASSWORD` como secretos del entorno
-  en el primer arranque, y retirarlos después.
 
 ## Decisiones acordadas
 

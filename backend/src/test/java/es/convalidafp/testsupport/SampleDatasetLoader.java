@@ -71,7 +71,8 @@ public final class SampleDatasetLoader {
               text(r, "acronym"),
               text(r, "professional_family"),
               text(r, "regulation_ref"),
-              decimal(r, "total_ects"));
+              decimal(r, "total_ects"),
+              text(r, "help_text"));
       em.persist(cycle);
       cycles.put(cycle.getCode(), cycle);
     }

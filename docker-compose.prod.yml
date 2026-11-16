@@ -1,0 +1,116 @@
+# ConvalidaFP — producción. Guía completa en docs/DEPLOY.md.
+#
+#   cp .env.prod.example .env.prod   (y rellénalo)
+#   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+#
+# Diferencias con docker-compose.yml (desarrollo local):
+#   - HTTPS: Caddy termina TLS con un certificado de Let's Encrypt y es el único servicio con puertos
+#     publicados (80 y 443). El 80 solo redirige a HTTPS.
+#   - El backend no publica el puerto 8080: solo es accesible a través de Caddy → Nginx.
+#   - Sin datos de ejemplo: no se define CONVALIDAFP_BOOTSTRAP_SAMPLE_DATASET_ENABLED (desactivada
+#     por defecto) ni se monta data/sample. Los datasets se cargan desde el panel de administración.
+#   - X-Forwarded-For solo de proxies de confianza: el backend acepta esa cabecera únicamente de
+#     Caddy y de Nginx, que tienen IP fija en la red «edge». Caddy descarta la que envíe el cliente.
+#   - La base de datos está en una red interna, sin salida a Internet ni acceso desde fuera.
+name: convalidafp-prod
+
+services:
+  db:
+    image: mariadb:11.8
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:-convalidafp}
+      MARIADB_USER: ${DB_USER:-convalidafp}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env.prod}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Define DB_ROOT_PASSWORD en .env.prod}
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - data
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/${DB_NAME:-convalidafp}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-convalidafp}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      LOGGING_STRUCTURED_FORMAT_CONSOLE: ecs
+      # Primer administrador: solo en el primer arranque. Después se borran de .env.prod.
+      CONVALIDAFP_ADMIN_BOOTSTRAP_USERNAME: ${ADMIN_USERNAME:-}
+      CONVALIDAFP_ADMIN_BOOTSTRAP_PASSWORD: ${ADMIN_PASSWORD:-}
+      # Proxies de confianza para X-Forwarded-For y X-Forwarded-Proto: Caddy (.10) y Nginx (.20).
+      # Cualquier otra IP que envíe esas cabeceras se ignora.
+      SERVER_TOMCAT_REMOTEIP_INTERNAL_PROXIES: '172\.30\.0\.(10|20)'
+    # Sin «ports»: el 8080 no se publica.
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      edge:
+        ipv4_address: 172.30.0.30
+      data: {}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      edge:
+        ipv4_address: 172.30.0.20
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ > /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Proxy HTTPS. Obtiene y renueva el certificado de DOMAIN solo; redirige el 80 al 443.
+  proxy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    depends_on:
+      frontend:
+        condition: service_healthy
+    environment:
+      DOMAIN: ${DOMAIN:?Define DOMAIN en .env.prod}
+      ACME_EMAIL: ${ACME_EMAIL:?Define ACME_EMAIL en .env.prod}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      edge:
+        ipv4_address: 172.30.0.10
+
+networks:
+  # Caddy, Nginx y backend, con IP fija para poder confiar solo en los dos proxies.
+  edge:
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+  # Backend y base de datos. Interna: sin salida a Internet.
+  data:
+    internal: true
+
+volumes:
+  db-data:
+  caddy-data:
+  caddy-config:

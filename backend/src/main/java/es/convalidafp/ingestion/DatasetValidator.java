@@ -171,7 +171,7 @@ public class DatasetValidator {
         return 64;
       }
       return switch (column) {
-        case "title" -> 500;
+        case "title", "help_text" -> 500;
         case "url", "website_url", "condition_text" -> 1000;
         case "notes" -> 2000;
         // source_excerpt tiene su propia validación (F11).

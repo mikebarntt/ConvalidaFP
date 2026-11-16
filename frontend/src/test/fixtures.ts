@@ -22,6 +22,7 @@ const base: Simulation = {
     professionalFamily: 'Informática Ficticia',
     regulationRef: 'Norma Ficticia 01/2010',
     totalEcts: 120,
+    helpText: null,
   },
   degree: {
     id: 'UEJ-GP',

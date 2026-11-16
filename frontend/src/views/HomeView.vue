@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getCycles, getDegrees, getUniversities } from '@/api/public'
 import type { Degree } from '@/api/types'
 import AsyncState from '@/components/AsyncState.vue'
+import { cycleHelpText } from '@/lib/cycles'
 import { degreeLabel, tableStatusLabel } from '@/lib/format'
 import { queryText } from '@/lib/urlState'
 import { useAsyncData } from '@/lib/useAsyncData'
@@ -75,6 +76,13 @@ function submit(): void {
                   <span v-if="cycle.acronym">{{ cycle.acronym }}</span>
                   <span v-if="cycle.acronym && cycle.regulationRef"> · </span>
                   <span v-if="cycle.regulationRef">{{ cycle.regulationRef }}</span>
+                </span>
+                <span
+                  v-if="cycleHelpText(cycle, catalog.data.value.cycles)"
+                  class="mt-2 block text-sm"
+                  data-testid="ayuda-ciclo"
+                >
+                  {{ cycleHelpText(cycle, catalog.data.value.cycles) }}
                 </span>
               </span>
             </label>

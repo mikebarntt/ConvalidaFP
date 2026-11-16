@@ -23,7 +23,8 @@ public final class CatalogDtos {
       String acronym,
       String professionalFamily,
       String regulationRef,
-      BigDecimal totalEcts) {}
+      BigDecimal totalEcts,
+      String helpText) {}
 
   public record UniversityDto(
       String id, String name, String shortName, String ownership, String region, String websiteUrl) {}

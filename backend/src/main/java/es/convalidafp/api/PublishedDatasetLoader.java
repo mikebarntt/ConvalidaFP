@@ -91,7 +91,8 @@ public class PublishedDatasetLoader {
                         c.getAcronym(),
                         c.getProfessionalFamily(),
                         c.getRegulationRef(),
-                        plain(c.getTotalEcts())))
+                        plain(c.getTotalEcts()),
+                        c.getHelpText()))
             .toList();
 
     List<UniversityDto> universityDtos =

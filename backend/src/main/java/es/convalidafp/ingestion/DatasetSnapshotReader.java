@@ -86,7 +86,8 @@ class DatasetSnapshotReader {
               "acronym", c.getAcronym(),
               "professional_family", c.getProfessionalFamily(),
               "regulation_ref", c.getRegulationRef(),
-              "total_ects", c.getTotalEcts()));
+              "total_ects", c.getTotalEcts(),
+              "help_text", c.getHelpText()));
     }
     for (FpModule m : modules.findByDatasetVersionIdOrderByCode(versionId)) {
       snapshot.put(

@@ -1,5 +1,13 @@
 import { expect, test } from '@playwright/test'
-import { ADMIN_USERNAME, expectAccessible, expectNoHorizontalScroll, login, sampleZip, screenshot } from './support'
+import {
+  ADMIN_USERNAME,
+  clickMenuLink,
+  expectAccessible,
+  expectNoHorizontalScroll,
+  login,
+  sampleZip,
+  screenshot,
+} from './support'
 
 // Panel de administración: login, importaciones (con versiones) y auditoría.
 // El administrador de prueba solo existe en el entorno de tests (.env.e2e).
@@ -139,7 +147,7 @@ test.describe('importaciones', () => {
     await expect(visitor.getByTestId('ects-reconocidos')).toHaveText('24')
 
     // Restaurar la versión anterior, también con confirmación.
-    await page.getByRole('link', { name: 'Importaciones' }).first().click()
+    await clickMenuLink(page, 'Importaciones')
     const row = page.locator(`tr[data-version="${original.versionId}"]`)
     await expect(row).toContainText('Archivada')
     await row.getByRole('button', { name: /Restaurar/ }).click()
@@ -199,12 +207,12 @@ test.describe('importaciones', () => {
   })
 
   test('si la sesión caduca, vuelve al login y después a la pantalla en la que estaba', async ({ page }, testInfo) => {
-    await page.getByRole('link', { name: 'Auditoría' }).click()
+    await clickMenuLink(page, 'Auditoría')
     await expect(page.getByTestId('auditoria')).toBeVisible()
 
     // La sesión caduca en el servidor: desaparece la cookie.
     await page.context().clearCookies()
-    await page.getByRole('link', { name: 'Importaciones' }).first().click()
+    await clickMenuLink(page, 'Importaciones')
 
     await expect(page).toHaveURL(/\/admin\/login\?redirect=\/admin\/importaciones&caducada=1$/)
     await expect(page.getByTestId('caducada')).toContainText('Tu sesión ha caducado')

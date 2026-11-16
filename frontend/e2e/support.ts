@@ -75,6 +75,18 @@ export async function sampleZip(changes: Record<string, [string, string]> = {}):
   return Buffer.from(zipSync(files))
 }
 
+/**
+ * Pulsa un enlace del menú principal. En el móvil el menú está plegado en el botón «Menú»: primero
+ * se abre.
+ */
+export async function clickMenuLink(page: Page, name: string): Promise<void> {
+  const toggle = page.getByTestId('menu-movil')
+  if ((await toggle.isVisible()) && (await toggle.getAttribute('aria-expanded')) !== 'true') {
+    await toggle.click()
+  }
+  await page.getByRole('navigation').getByRole('link', { name, exact: true }).click()
+}
+
 /** Inicia sesión por la pantalla de login. */
 export async function login(page: Page): Promise<void> {
   await page.getByLabel('Usuario').fill(ADMIN_USERNAME)

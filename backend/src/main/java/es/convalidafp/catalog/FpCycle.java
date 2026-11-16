@@ -25,6 +25,10 @@ public class FpCycle extends VersionedEntity {
   @Column(name = "total_ects", precision = 6, scale = 2)
   private BigDecimal totalEcts;
 
+  /** Cómo saber si este es tu ciclo cuando otro tiene el mismo nombre y distinta normativa. */
+  @Column(name = "help_text", length = 500)
+  private String helpText;
+
   protected FpCycle() {}
 
   public FpCycle(
@@ -34,13 +38,15 @@ public class FpCycle extends VersionedEntity {
       String acronym,
       String professionalFamily,
       String regulationRef,
-      BigDecimal totalEcts) {
+      BigDecimal totalEcts,
+      String helpText) {
     super(datasetVersion, code);
     this.name = name;
     this.acronym = acronym;
     this.professionalFamily = professionalFamily;
     this.regulationRef = regulationRef;
     this.totalEcts = totalEcts;
+    this.helpText = helpText;
   }
 
   public String getName() {
@@ -61,5 +67,9 @@ public class FpCycle extends VersionedEntity {
 
   public BigDecimal getTotalEcts() {
     return totalEcts;
+  }
+
+  public String getHelpText() {
+    return helpText;
   }
 }

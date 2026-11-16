@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { simulate } from '@/api/public'
+import { reportUrl, simulate } from '@/api/public'
 import type { RecognizedSubject, Simulation } from '@/api/types'
 import AsyncState from '@/components/AsyncState.vue'
 import CopyLinkButton from '@/components/CopyLinkButton.vue'
@@ -33,6 +33,7 @@ const simulation = useAsyncData<Simulation>(
   () => [cycleId.value, degreeId.value, year.value],
 )
 const result = computed(() => simulation.data.value)
+const pdfUrl = computed(() => reportUrl(cycleId.value, degreeId.value, year.value || undefined))
 
 /** Asignaturas reconocidas agrupadas por curso, con los cursos en orden. */
 const subjectsByYear = computed(() => {
@@ -298,6 +299,7 @@ const remainingCount = computed(
         </div>
 
         <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a class="btn btn-primary" :href="pdfUrl" download data-testid="descargar-pdf">Descargar informe PDF</a>
           <CopyLinkButton />
           <RouterLink class="btn btn-secondary" :to="{ name: 'explore', query: { ciclo: result.cycle.id } }">
             Ver otros grados
@@ -306,7 +308,6 @@ const remainingCount = computed(
             Cambiar de grado
           </RouterLink>
         </div>
-        <!-- El botón de informe PDF llega con la Fase 7. -->
 
         <p class="mt-6 text-sm text-muted">
           Datos del curso {{ result.dataset.academicYear }}, actualizados el

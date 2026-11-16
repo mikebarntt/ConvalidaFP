@@ -17,6 +17,8 @@ export interface Cycle {
   professionalFamily: string | null
   regulationRef: string | null
   totalEcts: number | null
+  /** Cómo saber si este es tu ciclo cuando otro tiene el mismo nombre y distinta normativa. */
+  helpText: string | null
 }
 
 export interface University {

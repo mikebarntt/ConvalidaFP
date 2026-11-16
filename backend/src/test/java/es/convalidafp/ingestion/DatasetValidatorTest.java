@@ -50,6 +50,10 @@ class DatasetValidatorTest {
     assertThat(report.isValid()).isTrue();
   }
 
+  /** help_text de CF-EJ en el dataset de ejemplo, con sus comillas. */
+  private static final String HELP_TEXT =
+      "\"Si tu título cita la Norma Ficticia 01/2010 (planes anteriores a 2024), este es tu ciclo.\"";
+
   @Test
   @DisplayName("Se lee el manifiesto: curso, fecha y revisor")
   void manifestIsRead() {
@@ -249,6 +253,9 @@ class DatasetValidatorTest {
         UNIVERSITIES,
         2,
         "name");
+    // help_text admite hasta 500 caracteres.
+    assertThat(validate(small().replace(CYCLES, HELP_TEXT, "x".repeat(500))).errors()).isEmpty();
+    assertError(validate(small().replace(CYCLES, HELP_TEXT, "x".repeat(501))), "F6", CYCLES, 2, "help_text");
     assertManifestError(validate(small().replace(MANIFEST, "\"2025-10-01\"", "\"01/10/2025\"")), "F6", "date");
     assertManifestError(validate(small().replace(MANIFEST, "\"2025-26\"", "\"2025\"")), "F6", "academic_year");
   }

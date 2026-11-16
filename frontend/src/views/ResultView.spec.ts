@@ -7,7 +7,10 @@ import type { Simulation } from '@/api/types'
 import { capped, noAgreement, noData, recognized } from '@/test/fixtures'
 import ResultView from './ResultView.vue'
 
-vi.mock('@/api/public', () => ({ simulate: vi.fn() }))
+vi.mock('@/api/public', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/api/public')>()),
+  simulate: vi.fn(),
+}))
 
 async function show(result: Simulation | Error, url = '/resultado?ciclo=CF-EJ&grado=UEJ-GP'): Promise<VueWrapper> {
   if (result instanceof Error) {
@@ -69,6 +72,21 @@ describe('pantalla de resultado', () => {
       expect(notice).toContain('tasas')
       wrapper.unmount()
     }
+  })
+
+  it('el botón de informe PDF descarga el mismo resultado: ciclo, grado y curso de la URL', async () => {
+    for (const result of [recognized(), capped(), noData(), noAgreement()]) {
+      const wrapper = await show(result, '/resultado?ciclo=CF-EJ&grado=UEJ-GP&curso=2025-26')
+      const link = wrapper.get('[data-testid="descargar-pdf"]')
+      expect(link.text()).toBe('Descargar informe PDF')
+      expect(link.attributes('href')).toBe('/api/v1/simulations/report.pdf?cycle=CF-EJ&degree=UEJ-GP&year=2025-26')
+      expect(link.attributes('download')).toBeDefined()
+      wrapper.unmount()
+    }
+    const current = await show(recognized())
+    expect(current.get('[data-testid="descargar-pdf"]').attributes('href')).toBe(
+      '/api/v1/simulations/report.pdf?cycle=CF-EJ&degree=UEJ-GP',
+    )
   })
 
   it('agrupa las asignaturas reconocidas por curso', async () => {
@@ -175,11 +193,11 @@ describe('pantalla de resultado', () => {
     expect(data).not.toBe(agreement)
   })
 
-  it('tiene un botón para copiar el enlace y todavía no muestra el de PDF', async () => {
+  it('tiene un botón para copiar el enlace junto al de informe PDF', async () => {
     const wrapper = await show(recognized())
     const buttons = wrapper.findAll('button').map((b) => b.text())
     expect(buttons).toContain('Copiar enlace')
-    expect(wrapper.text()).not.toMatch(/pdf/i)
+    expect(wrapper.get('[data-testid="descargar-pdf"]').text()).toBe('Descargar informe PDF')
 
     const writeText = vi.fn().mockResolvedValue(undefined)
     Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })

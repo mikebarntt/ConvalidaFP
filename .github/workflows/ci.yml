@@ -1,0 +1,142 @@
+# Integración continua: en cada push y en cada pull request.
+#   backend   compilación y tests con Testcontainers (MariaDB real) + cobertura del motor ≥ 90 %
+#   frontend  formato, lint, tests unitarios y compilación
+#   e2e       Playwright (escritorio y móvil, con axe) contra la aplicación completa en Docker Compose
+#   images    construcción de las imágenes Docker del backend y del frontend (sin publicarlas)
+#   deploy    configuración de producción: comprobación estática y prueba de humo con HTTPS
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (build y tests)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: mvn verify (tests con Testcontainers y cobertura)
+        working-directory: backend
+        run: mvn -B --no-transfer-progress verify
+      - name: Informe de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco
+          path: backend/target/site/jacoco/
+          if-no-files-found: ignore
+      - name: Informes de los tests
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: backend/target/surefire-reports/
+
+  frontend:
+    name: Frontend (formato, lint, tests y build)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --no-fund --no-audit
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  e2e:
+    name: Extremo a extremo (Playwright)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Arrancar el entorno de tests (.env.e2e)
+        run: docker compose -p convalidafp-e2e --env-file .env.e2e up -d --build --wait --wait-timeout 600
+      - name: Playwright (escritorio y móvil)
+        run: >
+          docker run --rm --ipc=host --network host
+          -v "$PWD:/repo" -w /repo/frontend
+          -e CI=true -e E2E_BASE_URL=http://localhost:3100
+          mcr.microsoft.com/playwright:v1.65.1-noble
+          sh -c "npm ci --no-fund --no-audit && npx playwright test"
+      - name: Registros de los contenedores
+        if: failure()
+        run: docker compose -p convalidafp-e2e --env-file .env.e2e logs --tail 200
+      - name: Trazas de Playwright
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: frontend/test-results/
+          if-no-files-found: ignore
+      - name: Capturas de pantalla
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: docs/screenshots/
+      - name: Parar el entorno
+        if: always()
+        run: docker compose -p convalidafp-e2e --env-file .env.e2e down -v
+
+  images:
+    name: Imágenes Docker
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        service: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.service }}
+          push: false
+          tags: convalidafp-${{ matrix.service }}:${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.service }}
+
+  deploy:
+    name: Configuración de producción
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Caddyfile válido
+        run: >
+          docker run --rm -e DOMAIN=localhost -e ACME_EMAIL=pruebas@example.com
+          -v "$PWD/deploy/Caddyfile:/etc/caddy/Caddyfile:ro"
+          caddy:2.10-alpine caddy validate --config /etc/caddy/Caddyfile
+      - name: La comprobación rechaza la configuración de desarrollo (prueba negativa)
+        run: |
+          if docker compose -f docker-compose.yml --env-file .env.e2e config --format json | node deploy/check-prod-config.mjs; then
+            echo "check-prod-config.mjs debería rechazar docker-compose.yml"; exit 1
+          fi
+      - name: Prueba de humo de docker-compose.prod.yml (HTTPS, sin 8080, sin datos de ejemplo, X-Forwarded-For)
+        run: bash deploy/smoke-test.sh

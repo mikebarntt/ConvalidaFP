@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAdminStore } from '@/stores/admin'
 
@@ -21,6 +21,21 @@ const adminLinks = [
 ]
 const links = computed(() => (inAdmin.value ? (admin.isLoggedIn ? adminLinks : []) : publicLinks))
 
+// En el móvil el menú se pliega en un botón «Menú» con un desplegable; en pantallas anchas va en línea.
+const menuOpen = ref(false)
+const menuButton = ref<HTMLButtonElement | null>(null)
+watch(
+  () => route.fullPath,
+  () => (menuOpen.value = false),
+)
+
+function closeMenu(): void {
+  if (menuOpen.value) {
+    menuOpen.value = false
+    menuButton.value?.focus()
+  }
+}
+
 async function logout(): Promise<void> {
   await admin.logout()
   await router.push({ name: 'admin-login' })
@@ -36,7 +51,7 @@ async function logout(): Promise<void> {
       Saltar al contenido
     </a>
 
-    <header class="border-b border-line bg-surface">
+    <header class="relative border-b border-line bg-surface">
       <div class="mx-auto flex max-w-5xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
         <RouterLink
           :to="{ name: inAdmin ? 'admin-imports' : 'home' }"
@@ -46,12 +61,39 @@ async function logout(): Promise<void> {
           <span v-if="inAdmin" class="eyebrow">Administración</span>
         </RouterLink>
 
-        <nav v-if="links.length" :aria-label="inAdmin ? 'Administración' : 'Principal'" class="flex-1">
-          <ul class="-mx-2 flex flex-wrap items-center gap-x-1">
+        <nav
+          v-if="links.length"
+          :aria-label="inAdmin ? 'Administración' : 'Principal'"
+          class="ml-auto sm:ml-0 sm:flex-1"
+          @keydown.esc="closeMenu"
+        >
+          <button
+            ref="menuButton"
+            type="button"
+            class="btn btn-secondary gap-2 sm:hidden"
+            aria-controls="menu-principal"
+            :aria-expanded="menuOpen"
+            data-testid="menu-movil"
+            @click="menuOpen = !menuOpen"
+          >
+            <svg aria-hidden="true" viewBox="0 0 20 20" class="size-5" fill="currentColor">
+              <path
+                v-if="menuOpen"
+                d="M5.3 4 10 8.7 14.7 4 16 5.3 11.3 10l4.7 4.7-1.3 1.3-4.7-4.7L5.3 16 4 14.7 8.7 10 4 5.3z"
+              />
+              <path v-else d="M3 5h14v2H3zm0 4h14v2H3zm0 4h14v2H3z" />
+            </svg>
+            Menú
+          </button>
+          <ul
+            id="menu-principal"
+            :class="menuOpen ? 'flex' : 'hidden'"
+            class="absolute inset-x-0 top-full z-40 flex-col border-b border-line bg-surface px-4 py-2 shadow-md sm:static sm:z-auto sm:-mx-2 sm:flex sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-1 sm:border-0 sm:p-0 sm:shadow-none"
+          >
             <li v-for="link in links" :key="link.name">
               <RouterLink
                 :to="{ name: link.name }"
-                class="inline-flex min-h-11 items-center rounded-md px-2 font-semibold text-ink no-underline hover:bg-brand-soft hover:text-brand-strong"
+                class="flex min-h-11 w-full items-center rounded-md px-2 font-semibold text-ink no-underline hover:bg-brand-soft hover:text-brand-strong sm:inline-flex sm:w-auto"
                 exact-active-class="text-brand underline decoration-2 underline-offset-8"
               >
                 {{ link.label }}

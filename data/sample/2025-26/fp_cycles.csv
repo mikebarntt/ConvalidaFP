@@ -1,2 +1,2 @@
-cycle_id,name,acronym,professional_family,regulation_ref,total_ects
-CF-EJ,Ciclo Ficticio de Desarrollo de Aplicaciones de Ejemplo,CFE,Informática Ficticia,Norma Ficticia 01/2010,120
+cycle_id,name,acronym,professional_family,regulation_ref,total_ects,help_text
+CF-EJ,Ciclo Ficticio de Desarrollo de Aplicaciones de Ejemplo,CFE,Informática Ficticia,Norma Ficticia 01/2010,120,"Si tu título cita la Norma Ficticia 01/2010 (planes anteriores a 2024), este es tu ciclo."

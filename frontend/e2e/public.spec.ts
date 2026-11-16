@@ -12,9 +12,16 @@ test.describe('flujo principal: simulación y resultado', () => {
     await expectNoHorizontalScroll(page)
     await screenshot(page, testInfo, '01-inicio')
 
-    // 1. El ciclo. Hay dos con el mismo nombre y distinta normativa: se distinguen por ella.
-    await expect(page.getByText('Norma Ficticia 01/2010')).toBeVisible()
-    await expect(page.getByText('Norma Ficticia 02/2024')).toBeVisible()
+    // 1. El ciclo. Hay dos con el mismo nombre y distinta normativa: se distinguen por ella, y cada
+    // uno explica en una frase cómo saber si es el tuyo (help_text del dataset).
+    await expect(page.getByText('Norma Ficticia 01/2010', { exact: true })).toBeVisible()
+    await expect(page.getByText('Norma Ficticia 02/2024', { exact: true })).toBeVisible()
+    const help = page.getByTestId('ayuda-ciclo')
+    await expect(help).toHaveCount(2)
+    await expect(help.first()).toHaveText(
+      'Si tu título cita la Norma Ficticia 01/2010 (planes anteriores a 2024), este es tu ciclo.',
+    )
+    await expect(help.nth(1)).toContainText('Norma Ficticia 02/2024')
     await page.locator('input[name="ciclo"][value="CF-EJ"]').check()
 
     // 2. Universidad y grado. Cada grado dice si tiene tabla para ese ciclo.
@@ -64,9 +71,16 @@ test.describe('flujo principal: simulación y resultado', () => {
     await thirdYear.locator('summary').click()
     await expect(thirdYear.getByText('Inteligencia Artificial Ficticia')).toBeVisible()
 
-    // Todavía no hay botón de PDF (Fase 7).
-    await expect(page.getByRole('button', { name: /pdf/i })).toHaveCount(0)
-    await expect(page.getByRole('link', { name: /pdf/i })).toHaveCount(0)
+    // Informe PDF del mismo resultado.
+    const pdf = page.getByRole('link', { name: 'Descargar informe PDF' })
+    await expect(pdf).toHaveAttribute('href', '/api/v1/simulations/report.pdf?cycle=CF-EJ&degree=UEJ-GP')
+    const response = await page.request.get('/api/v1/simulations/report.pdf?cycle=CF-EJ&degree=UEJ-GP')
+    expect(response.status()).toBe(200)
+    expect(response.headers()['content-type']).toBe('application/pdf')
+    expect((await response.body()).subarray(0, 5).toString()).toBe('%PDF-')
+    const download = page.waitForEvent('download')
+    await pdf.click()
+    expect((await download).suggestedFilename()).toBe('convalidafp-CF-EJ-UEJ-GP.pdf')
 
     await expectAccessible(page)
     await expectNoHorizontalScroll(page)
@@ -234,6 +248,48 @@ test.describe('comparador, explorador y fuentes', () => {
     await expectAccessible(page)
     await expectNoHorizontalScroll(page)
     await screenshot(page, testInfo, '09-fuentes')
+  })
+})
+
+test.describe('menú principal', () => {
+  test('en el móvil cabe en una línea y se despliega con el botón «Menú»', async ({ page }, testInfo) => {
+    await page.goto('/')
+    const toggle = page.getByTestId('menu-movil')
+    const menu = page.getByRole('navigation', { name: 'Principal' })
+    const header = page.locator('header')
+
+    if (testInfo.project.name === 'escritorio') {
+      await expect(toggle).toBeHidden()
+      await expect(menu.getByRole('link', { name: 'Comparar' })).toBeVisible()
+      return
+    }
+
+    // Plegado: la cabecera es una sola línea con la marca y el botón.
+    await expect(menu.getByRole('link', { name: 'Comparar' })).toBeHidden()
+    const brand = await page
+      .getByRole('link', { name: /ConvalidaFP/ })
+      .first()
+      .boundingBox()
+    const button = await toggle.boundingBox()
+    expect(Math.abs(brand!.y + brand!.height / 2 - (button!.y + button!.height / 2))).toBeLessThan(8)
+    expect((await header.boundingBox())!.height).toBeLessThan(80)
+
+    // Desplegado: los cuatro enlaces, sin desbordar y accesible.
+    await toggle.click()
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    await expect(menu.getByRole('link')).toHaveCount(4)
+    await expectAccessible(page)
+    await expectNoHorizontalScroll(page)
+
+    // Escape lo cierra y devuelve el foco al botón; elegir un enlace navega y lo cierra.
+    await menu.getByRole('link', { name: 'Comparar' }).focus()
+    await page.keyboard.press('Escape')
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    await expect(toggle).toBeFocused()
+    await toggle.click()
+    await menu.getByRole('link', { name: 'Explorar' }).click()
+    await expect(page).toHaveURL(/\/explorar/)
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false')
   })
 })
 

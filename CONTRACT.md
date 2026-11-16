@@ -72,6 +72,7 @@ con identificadores distintos.
 | `professional_family` | Texto | No | Familia profesional |
 | `regulation_ref` | Texto | No | Norma que regula el título; distingue las dos versiones de un mismo ciclo |
 | `total_ects` | Decimal > 0 | No | ECTS totales del ciclo |
+| `help_text` | Texto, máximo 500 caracteres | No | Una frase que explica cómo saber si este es tu ciclo. La pantalla de inicio la muestra solo cuando otro ciclo tiene el mismo nombre y distinta `regulation_ref`. Vacío = no se muestra ninguna ayuda (el frontend nunca escribe una propia). Añadida en la Fase 7 |
 
 ### 3.3 `fp_modules.csv`
 
@@ -282,7 +283,7 @@ De formato **[interpretación]**:
 | F3 | Todas las filas tienen el mismo número de columnas que la cabecera |
 | F4 | Los identificadores cumplen el patrón de mayúsculas, cifras y guiones |
 | F5 | Los valores de lista (`ownership`, `degree_type`, `subject_type`, `document_type`, `status`, `target_type`, `is_conditional`) son uno de los permitidos |
-| F6 | Decimales, enteros, fechas y SHA-256 tienen el formato indicado, y ningún texto supera la longitud máxima (64 caracteres en identificadores, códigos y siglas; 255 en nombres; 500 en títulos; 1000 en URL y condiciones; 2000 en notas) |
+| F6 | Decimales, enteros, fechas y SHA-256 tienen el formato indicado, y ningún texto supera la longitud máxima (64 caracteres en identificadores, códigos y siglas; 255 en nombres; 500 en títulos y en `help_text`; 1000 en URL y condiciones; 2000 en notas) |
 | F7 | Las columnas marcadas como obligatorias no están vacías |
 | F8 | El checksum de cada fichero coincide con el del manifiesto, y el curso del manifiesto con la carpeta y con `academic_year` de todas las tablas |
 | F9 | Una regla `OPTATIVE_CREDITS` no tiene `target_subject_id` y sí `recognized_ects` |

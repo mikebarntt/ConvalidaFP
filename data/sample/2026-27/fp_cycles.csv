@@ -1,4 +1,4 @@
-cycle_id,name,acronym,professional_family,regulation_ref,total_ects
-CF-EJ,Ciclo Ficticio de Desarrollo de Aplicaciones de Ejemplo,CFE,Informática Ficticia,Norma Ficticia 01/2010,120
-CF-EJ-2024,Ciclo Ficticio de Desarrollo de Aplicaciones de Ejemplo,CFE,Informática Ficticia,Norma Ficticia 02/2024,120
-CF-PR,"Ciclo de Prueba de Sistemas, Redes y ""Otras Cosas""",CPS,Informática Ficticia,Norma Ficticia 03/2011,120
+cycle_id,name,acronym,professional_family,regulation_ref,total_ects,help_text
+CF-EJ,Ciclo Ficticio de Desarrollo de Aplicaciones de Ejemplo,CFE,Informática Ficticia,Norma Ficticia 01/2010,120,"Si tu título cita la Norma Ficticia 01/2010 (planes anteriores a 2024), este es tu ciclo."
+CF-EJ-2024,Ciclo Ficticio de Desarrollo de Aplicaciones de Ejemplo,CFE,Informática Ficticia,Norma Ficticia 02/2024,120,"Si tu título cita la Norma Ficticia 02/2024 (empezaste en 2024 o después), este es tu ciclo."
+CF-PR,"Ciclo de Prueba de Sistemas, Redes y ""Otras Cosas""",CPS,Informática Ficticia,Norma Ficticia 03/2011,120,

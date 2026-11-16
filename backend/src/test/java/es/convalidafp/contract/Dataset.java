@@ -34,7 +34,7 @@ public final class Dataset {
     HEADERS.put(
         "fp_cycles.csv",
         List.of(
-            "cycle_id", "name", "acronym", "professional_family", "regulation_ref", "total_ects"));
+            "cycle_id", "name", "acronym", "professional_family", "regulation_ref", "total_ects", "help_text"));
     HEADERS.put(
         "fp_modules.csv",
         List.of("module_id", "cycle_id", "official_code", "name", "ects", "course_year"));

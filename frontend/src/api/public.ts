@@ -37,6 +37,11 @@ export function simulate(cycle: string, degree: string, year?: string): Promise<
   return request(withQuery(`${BASE}/simulations`, { cycle, degree, year }))
 }
 
+/** Dirección del informe PDF de una simulación (se descarga con un enlace normal). */
+export function reportUrl(cycle: string, degree: string, year?: string): string {
+  return withQuery(`${BASE}/simulations/report.pdf`, { cycle, degree, year })
+}
+
 export function compare(cycle: string, degrees: string[], year?: string): Promise<Comparison> {
   return request(withQuery(`${BASE}/comparisons`, { cycle, degrees: degrees.join(','), year }))
 }

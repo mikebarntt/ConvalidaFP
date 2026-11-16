@@ -12,6 +12,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +58,31 @@ class SimulationController {
     PublishedDataset dataset = datasets.resolve(year);
     SimulationResponse body = SimulationDtos.toResponse(dataset, simulations.simulate(dataset, cycle, degree));
     return caching.respond(request, dataset, body);
+  }
+
+  // Sin «produces»: así los errores siguen saliendo en Problem Details (JSON).
+  @GetMapping("/simulations/report.pdf")
+  @Operation(
+      summary = "Informe PDF de una simulación",
+      description =
+          "El mismo desglose que la simulación: ECTS, tope, asignaturas por curso con su fuente,"
+              + " condicionados aparte, asignaturas restantes y el aviso de que es orientativo.")
+  ResponseEntity<byte[]> report(
+      @Parameter(description = "Identificador de ciclo") @RequestParam String cycle,
+      @Parameter(description = "Identificador de grado") @RequestParam String degree,
+      @Parameter(description = CatalogController.YEAR_DESCRIPTION) @RequestParam(required = false) String year,
+      WebRequest request) {
+    PublishedDataset dataset = datasets.resolve(year);
+    SimulationResponse simulation = SimulationDtos.toResponse(dataset, simulations.simulate(dataset, cycle, degree));
+    ResponseEntity<byte[]> response = caching.respond(request, dataset, SimulationReportPdf.render(simulation));
+    String filename = "convalidafp-" + simulation.cycle().id() + "-" + simulation.degree().id() + ".pdf";
+    return ResponseEntity.status(response.getStatusCode())
+        .headers(response.getHeaders())
+        .contentType(MediaType.APPLICATION_PDF)
+        .header(
+            HttpHeaders.CONTENT_DISPOSITION,
+            ContentDisposition.attachment().filename(filename).build().toString())
+        .body(response.getBody());
   }
 
   @GetMapping("/comparisons")
