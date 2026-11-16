@@ -259,6 +259,9 @@ public class DatasetValidator {
         foreignKey(r, "university_id", universities, true);
         oneOf(r, "degree_type", "SIMPLE", "DOBLE");
         ects(r, "total_ects");
+        if (!r.blank("subjects_complete")) {
+          oneOf(r, "subjects_complete", "true", "false");
+        }
       }
       for (DataRow r : subjects.values()) {
         required(r, "name");

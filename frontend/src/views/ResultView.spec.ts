@@ -151,6 +151,41 @@ describe('pantalla de resultado', () => {
     expect(groups[0].text()).toContain('Básica')
   })
 
+  it('con la lista de asignaturas completa no muestra el aviso del plan incompleto', async () => {
+    const wrapper = await show(recognized())
+    expect(wrapper.text()).toContain('Asignaturas restantes')
+    expect(wrapper.find('[data-testid="plan-incompleto"]').exists()).toBe(false)
+  })
+
+  it('con la lista de asignaturas incompleta da los ECTS pendientes y enlaza la web del grado', async () => {
+    const wrapper = await show(
+      recognized({
+        subjectsComplete: false,
+        remainingByYear: [],
+        degree: { ...recognized().degree, url: 'https://uej.example/sur/grados/prueba' },
+      }),
+    )
+    expect(wrapper.text()).not.toContain('Asignaturas restantes')
+    expect(wrapper.findAll('[data-testid="restantes-curso"]')).toHaveLength(0)
+    const section = wrapper.get('[data-testid="plan-incompleto"]')
+    expect(section.text().replace(/\s+/g, ' ')).toBe(
+      'Te quedan 223,5 ECTS por cursar. Consulta el plan de estudios completo en la web de la universidad.',
+    )
+    const link = section.get('a')
+    expect(link.text()).toBe('la web de la universidad')
+    expect(link.attributes('href')).toBe('https://uej.example/sur/grados/prueba')
+    expect(link.attributes('rel')).toBe('noopener noreferrer')
+  })
+
+  it('con la lista incompleta y sin url del grado, solo el texto', async () => {
+    const wrapper = await show(recognized({ subjectsComplete: false, remainingByYear: [] }))
+    const section = wrapper.get('[data-testid="plan-incompleto"]')
+    expect(section.text().replace(/\s+/g, ' ')).toBe(
+      'Te quedan 223,5 ECTS por cursar. Consulta el plan de estudios completo en la web de la universidad.',
+    )
+    expect(section.find('a').exists()).toBe(false)
+  })
+
   it('si está limitado, explica cuánto suman las tablas, cuál es el tope y quién decide', async () => {
     const wrapper = await show(capped())
 

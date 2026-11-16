@@ -109,8 +109,30 @@ class SimulationApiTest extends ApiTestSupport {
 
     assertThat(values(result.get("optativeCredits"), "ruleId")).containsExactly("R-003");
     assertThat(values(result.get("conditionalRecognitions"), "ruleId")).containsExactly("R-004");
+    // subjects_complete = true: el dataset trae todas las asignaturas y se listan las restantes.
+    assertThat(result.get("subjectsComplete").asBoolean()).isTrue();
     assertThat(values(result.get("remainingByYear"), "courseYear")).containsExactly("1", "2", "3", "4");
     assertThat(result.get("noAgreement").isNull()).isTrue();
+  }
+
+  @Test
+  @DisplayName("subjects_complete = false: sin lista de restantes y con los mismos ECTS pendientes")
+  void simulationWithIncompleteSubjectList() throws Exception {
+    JsonNode result = getJson("/api/v1/simulations?cycle=CF-EJ&degree=UEJ-GP-SUR");
+
+    assertThat(result.get("outcome").asString()).isEqualTo("RECOGNIZED");
+    assertThat(result.get("subjectsComplete").asBoolean()).isFalse();
+    assertThat(result.get("remainingByYear")).isEmpty();
+    // ECTS pendientes = total_ects del grado - reconocidos, como siempre.
+    assertThat(result.get("recognizedEcts").decimalValue()).isEqualByComparingTo("22.5");
+    assertThat(result.get("degreeTotalEcts").decimalValue()).isEqualByComparingTo("240");
+    assertThat(result.get("pendingEcts").decimalValue()).isEqualByComparingTo("217.5");
+    assertThat(result.get("recognizedSubjects")).isNotEmpty();
+    // La pantalla enlaza la web del grado para consultar el plan completo.
+    assertThat(result.get("degree").get("url").asString()).isEqualTo("https://uej.example/sur/grados/prueba");
+
+    // También sin reconocimiento calculado: UFI-GS tiene subjects_complete vacío (= false).
+    assertThat(getJson("/api/v1/simulations?cycle=CF-EJ&degree=UFI-GS").get("subjectsComplete").asBoolean()).isFalse();
   }
 
   @Test

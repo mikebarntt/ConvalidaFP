@@ -30,7 +30,16 @@ public final class DatasetContract {
     headers.put(MODULES, List.of("module_id", "cycle_id", "official_code", "name", "ects", "course_year"));
     headers.put(
         DEGREES,
-        List.of("degree_id", "university_id", "name", "degree_type", "center", "total_ects", "plan_code", "url"));
+        List.of(
+            "degree_id",
+            "university_id",
+            "name",
+            "degree_type",
+            "center",
+            "total_ects",
+            "plan_code",
+            "url",
+            "subjects_complete"));
     headers.put(
         SUBJECTS,
         List.of("subject_id", "degree_id", "name", "ects", "subject_type", "course_year", "official_code"));

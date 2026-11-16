@@ -247,6 +247,10 @@ Aplicación de una sola página (Vue 3 + TypeScript) servida por Nginx junto con
   `fp_cycles.csv`); si está vacío no se muestra nada.
 - **Informe PDF.** «Descargar informe PDF» en la pantalla de resultado: el mismo desglose, con el
   aviso de que es orientativo.
+- **Asignaturas restantes solo con el plan completo.** Si el dataset no trae todas las asignaturas
+  del grado (`subjects_complete` = `false` en `degrees.csv`), la pantalla y el PDF sustituyen la
+  lista de restantes por «Te quedan X ECTS por cursar» y un enlace a la web del grado (si tiene
+  `url`).
 - **Menú del móvil** plegado en un botón «Menú» con un desplegable; en pantallas anchas va en línea.
 - **Tres resultados claros.** Distingue entre reconocimiento calculado (con barra de ECTS y marca
   del tope), convenio descartado («No existe tabla de reconocimiento firmada») y combinación aún no
@@ -302,6 +306,9 @@ Todos aceptan `year=AAAA-AA`; sin él se usa el curso vigente publicado.
 
 - **Tres resultados de simulación**, los tres con código 200: `RECOGNIZED`, `NO_AGREEMENT` y
   `NO_DATA`. Todos llevan el aviso de que el resultado es orientativo.
+- **`subjectsComplete`.** `false` cuando el dataset solo trae las asignaturas de las tablas de
+  reconocimiento: entonces `remainingByYear` va vacío. `pendingEcts` no cambia (`total_ects` del
+  grado menos los reconocidos).
 - **Una sola versión por petición.** Cada petición obtiene la versión publicada entera, como objeto
   inmutable en memoria, y calcula todo con ella aunque se publique otra mientras tanto.
 - **Caché.** Las versiones publicadas se guardan en memoria (Caffeine). Publicar o restaurar una

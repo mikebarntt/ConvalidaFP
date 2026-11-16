@@ -99,6 +99,7 @@ Un grado impartido en dos centros con tablas distintas son **dos filas**.
 | `total_ects` | Decimal > 0 | Solo si el grado tiene una tabla `VIGENTE` | Carga total. El tope del 25 % se calcula sobre este valor |
 | `plan_code` | Texto | No | Código del plan de estudios |
 | `url` | URL | No | Página oficial del grado |
+| `subjects_complete` | Booleano | No | `true` si `degree_subjects.csv` contiene **todas** las asignaturas del grado; `false` si solo contiene las que aparecen en las tablas de reconocimiento. Vacío = `false`. Con `false`, la simulación no muestra la lista de asignaturas restantes, sino los ECTS pendientes (`total_ects` menos los reconocidos) y un enlace a `url` para consultar el plan de estudios completo. Añadida antes de la Fase E |
 
 ### 3.5 `degree_subjects.csv`
 
@@ -282,7 +283,7 @@ De formato **[interpretación]**:
 | F2 | La cabecera de cada fichero es exactamente la de este documento |
 | F3 | Todas las filas tienen el mismo número de columnas que la cabecera |
 | F4 | Los identificadores cumplen el patrón de mayúsculas, cifras y guiones |
-| F5 | Los valores de lista (`ownership`, `degree_type`, `subject_type`, `document_type`, `status`, `target_type`, `is_conditional`) son uno de los permitidos |
+| F5 | Los valores de lista (`ownership`, `degree_type`, `subject_type`, `document_type`, `status`, `target_type`, `is_conditional`) son uno de los permitidos, y `subjects_complete`, si está informado, es `true` o `false` |
 | F6 | Decimales, enteros, fechas y SHA-256 tienen el formato indicado, y ningún texto supera la longitud máxima (64 caracteres en identificadores, códigos y siglas; 255 en nombres; 500 en títulos y en `help_text`; 1000 en URL y condiciones; 2000 en notas) |
 | F7 | Las columnas marcadas como obligatorias no están vacías |
 | F8 | El checksum de cada fichero coincide con el del manifiesto, y el curso del manifiesto con la carpeta y con `academic_year` de todas las tablas |

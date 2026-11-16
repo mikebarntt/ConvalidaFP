@@ -2,12 +2,19 @@ package es.convalidafp.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.lowagie.text.pdf.PdfArray;
+import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletResponse;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 
 /** Informe PDF de una simulación: GET /api/v1/simulations/report.pdf. */
 class SimulationReportApiTest extends ApiTestSupport {
@@ -45,6 +52,35 @@ class SimulationReportApiTest extends ApiTestSupport {
 
     // R-054: regla condicionada cuyo documento no explica la condición.
     assertThat(text(ok(URL + "?cycle=CF-EJ&degree=UEJ-GP-SUR"))).contains("condición no especificada en el documento");
+  }
+
+  @Test
+  @DisplayName("subjects_complete = false: el PDF da los ECTS pendientes y la web del grado en vez de las restantes")
+  void reportWithIncompleteSubjectList() throws Exception {
+    byte[] pdf = ok(URL + "?cycle=CF-EJ&degree=UEJ-GP-SUR");
+    assertThat(text(pdf))
+        .contains("Te quedan 217,5 ECTS por cursar.")
+        .contains("Consulta el plan de estudios completo en la web de la universidad")
+        .contains("https://uej.example/sur/grados/prueba")
+        .doesNotContain("Asignaturas restantes");
+    // El enlace es pulsable: anotación de enlace con la URL del grado.
+    assertThat(links(pdf)).containsExactly("https://uej.example/sur/grados/prueba");
+
+    // Con subjects_complete = true se mantiene la lista.
+    assertThat(text(ok(URL + "?cycle=CF-EJ&degree=UEJ-GP"))).contains("Asignaturas restantes").doesNotContain("Te quedan");
+  }
+
+  @Test
+  @DisplayName("subjects_complete = false y grado sin url: el PDF da solo el texto, sin enlace")
+  void reportWithIncompleteSubjectListAndNoUrl() throws Exception {
+    JsonNode response = getJson("/api/v1/simulations?cycle=CF-EJ&degree=UEJ-GP-SUR");
+    ((ObjectNode) response.get("degree")).putNull("url");
+    byte[] pdf = SimulationReportPdf.render(json.treeToValue(response, SimulationDtos.SimulationResponse.class));
+
+    assertThat(text(pdf))
+        .contains("Te quedan 217,5 ECTS por cursar. Consulta el plan de estudios completo en la web de la universidad.")
+        .doesNotContain("https://uej.example/sur/grados/prueba");
+    assertThat(links(pdf)).isEmpty();
   }
 
   @Test
@@ -87,6 +123,24 @@ class SimulationReportApiTest extends ApiTestSupport {
     MockHttpServletResponse response = perform(url).getResponse();
     assertThat(response.getStatus()).as(url).isEqualTo(200);
     return response.getContentAsByteArray();
+  }
+
+  /** URL de los enlaces (anotaciones /URI) de todas las páginas. */
+  private static List<String> links(byte[] pdf) throws Exception {
+    List<String> urls = new ArrayList<>();
+    try (PdfReader reader = new PdfReader(pdf)) {
+      for (int page = 1; page <= reader.getNumberOfPages(); page++) {
+        PdfArray annotations = reader.getPageN(page).getAsArray(PdfName.ANNOTS);
+        for (int i = 0; annotations != null && i < annotations.size(); i++) {
+          PdfDictionary annotation = (PdfDictionary) PdfReader.getPdfObject(annotations.getPdfObject(i));
+          PdfDictionary action = annotation.getAsDict(PdfName.A);
+          if (action != null && action.getAsString(PdfName.URI) != null) {
+            urls.add(action.getAsString(PdfName.URI).toString());
+          }
+        }
+      }
+    }
+    return urls;
   }
 
   /** Texto de todas las páginas, con los saltos de línea y espacios repetidos reducidos a uno. */

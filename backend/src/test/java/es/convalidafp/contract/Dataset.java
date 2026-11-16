@@ -48,7 +48,8 @@ public final class Dataset {
             "center",
             "total_ects",
             "plan_code",
-            "url"));
+            "url",
+            "subjects_complete"));
     HEADERS.put(
         "degree_subjects.csv",
         List.of(

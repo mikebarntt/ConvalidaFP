@@ -52,6 +52,7 @@ final class SimulationReportPdf {
   private static final Font SMALL = new Font(Font.HELVETICA, 8.5f, Font.NORMAL, MUTED);
   private static final Font SMALL_ITALIC = new Font(Font.HELVETICA, 8.5f, Font.ITALIC, MUTED);
   private static final Font BIG = new Font(Font.HELVETICA, 30, Font.BOLD, BRAND);
+  private static final Font LINK = new Font(Font.HELVETICA, 10, Font.UNDERLINE, BRAND);
   private static final Font CAP_BOLD = new Font(Font.HELVETICA, 10, Font.BOLD, CAP);
 
   private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -172,6 +173,10 @@ final class SimulationReportPdf {
       doc.add(table);
     }
 
+    if (!r.subjectsComplete()) {
+      pendingWithoutSubjectList(doc, r);
+      return;
+    }
     int remaining = r.remainingByYear().stream().mapToInt(y -> y.subjects().size()).sum();
     doc.add(heading("Asignaturas restantes"));
     doc.add(
@@ -192,6 +197,25 @@ final class SimulationReportPdf {
       }
       doc.add(table);
     }
+  }
+
+  /**
+   * El dataset solo trae las asignaturas de las tablas de reconocimiento: en lugar de la lista de
+   * restantes, los ECTS pendientes y la web del grado (con el enlace si la hay).
+   */
+  private static void pendingWithoutSubjectList(Document doc, SimulationResponse r) {
+    Paragraph p = paragraph("Te quedan " + ects(r.pendingEcts()) + " por cursar. ", BODY, 16);
+    String url = r.degree().url();
+    if (url == null || url.isBlank()) {
+      p.add(new Chunk("Consulta el plan de estudios completo en la web de la universidad.", BODY));
+    } else {
+      p.add(new Chunk("Consulta el plan de estudios completo en ", BODY));
+      Chunk link = new Chunk("la web de la universidad", LINK);
+      link.setAnchor(url);
+      p.add(link);
+      p.add(new Chunk(" (" + url + ").", BODY));
+    }
+    doc.add(p);
   }
 
   private static void noAgreement(Document doc, SimulationResponse r) {

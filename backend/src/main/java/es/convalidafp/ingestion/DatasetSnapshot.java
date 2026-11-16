@@ -78,6 +78,10 @@ final class DatasetSnapshot {
   }
 
   private static String normalize(String column, String value) {
+    // subjects_complete: vacío = false (CONTRACT.md, 3.4).
+    if ("subjects_complete".equals(column) && (value == null || value.isEmpty())) {
+      return "false";
+    }
     if (value == null || value.isEmpty()) {
       return "";
     }

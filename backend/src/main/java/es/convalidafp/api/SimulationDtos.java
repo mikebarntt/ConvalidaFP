@@ -36,6 +36,12 @@ public final class SimulationDtos {
    * @param capped true si la suma de las reglas supera el tope: el total se limita y la universidad
    *     decide qué asignaturas entran. null si no hay reconocimiento calculado
    * @param recognizedPercentage porcentaje del grado que se reconoce, con dos decimales
+   * @param pendingEcts total_ects del grado menos los reconocidos, aunque la lista de asignaturas
+   *     del grado esté incompleta
+   * @param subjectsComplete true si el dataset trae todas las asignaturas del grado. Con false solo
+   *     trae las que aparecen en las tablas de reconocimiento, y remainingByYear va vacío
+   * @param remainingByYear asignaturas del grado no reconocidas, por curso; vacío si
+   *     subjectsComplete es false
    * @param noAgreement solo con NO_AGREEMENT: de dónde sale la verificación
    */
   public record SimulationResponse(
@@ -57,6 +63,7 @@ public final class SimulationDtos {
       BigDecimal degreeTotalEcts,
       BigDecimal pendingEcts,
       BigDecimal recognizedPercentage,
+      boolean subjectsComplete,
       List<RemainingYearDto> remainingByYear,
       NoAgreementDto noAgreement) {}
 
@@ -123,6 +130,7 @@ public final class SimulationDtos {
   static SimulationResponse toResponse(PublishedDataset dataset, SimulationResult result) {
     CycleDto cycle = dataset.requireCycle(result.input().cycleId());
     DegreeDto degree = dataset.requireDegree(result.input().degreeId());
+    boolean subjectsComplete = dataset.subjectsComplete(degree.id());
     if (result instanceof Recognized r) {
       return new SimulationResponse(
           "RECOGNIZED",
@@ -166,7 +174,9 @@ public final class SimulationDtos {
           plain(r.degreeTotalEcts()),
           plain(r.pendingEcts()),
           percentage(r),
-          r.remainingByYear().stream()
+          subjectsComplete,
+          // Con la lista de asignaturas incompleta, las «restantes» serían engañosas: no se devuelven.
+          (subjectsComplete ? r.remainingByYear() : List.<SimulationResult.RemainingYear>of()).stream()
               .map(
                   y ->
                       new RemainingYearDto(
@@ -198,6 +208,7 @@ public final class SimulationDtos {
         degree.totalEcts(),
         null,
         null,
+        subjectsComplete,
         List.of(),
         noAgreement);
   }

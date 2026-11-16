@@ -47,6 +47,13 @@ public class Degree extends VersionedEntity {
   @Column(name = "url", length = 1000)
   private String url;
 
+  /**
+   * true si degree_subjects.csv trae todas las asignaturas del grado; false si solo trae las que
+   * aparecen en las tablas de reconocimiento.
+   */
+  @Column(name = "subjects_complete", nullable = false)
+  private boolean subjectsComplete;
+
   protected Degree() {}
 
   public Degree(
@@ -58,7 +65,8 @@ public class Degree extends VersionedEntity {
       String center,
       BigDecimal totalEcts,
       String planCode,
-      String url) {
+      String url,
+      boolean subjectsComplete) {
     super(datasetVersion, code);
     this.university = university;
     this.name = name;
@@ -67,6 +75,7 @@ public class Degree extends VersionedEntity {
     this.totalEcts = totalEcts;
     this.planCode = planCode;
     this.url = url;
+    this.subjectsComplete = subjectsComplete;
   }
 
   public University getUniversity() {
@@ -95,5 +104,9 @@ public class Degree extends VersionedEntity {
 
   public String getUrl() {
     return url;
+  }
+
+  public boolean isSubjectsComplete() {
+    return subjectsComplete;
   }
 }

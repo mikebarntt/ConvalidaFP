@@ -12,6 +12,7 @@ import es.convalidafp.simulation.TableData;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Una versión publicada del dataset, entera y en memoria, como objeto inmutable.
@@ -29,7 +30,8 @@ public record PublishedDataset(
     Map<String, DegreeData> degreeData,
     Map<String, TableData> tablesByCycleAndDegree,
     Map<String, List<RuleData>> rulesByTable,
-    Map<String, SourceDto> sources) {
+    Map<String, SourceDto> sources,
+    Set<String> degreesWithCompleteSubjects) {
 
   public PublishedDataset {
     cycles = List.copyOf(cycles);
@@ -40,6 +42,7 @@ public record PublishedDataset(
     tablesByCycleAndDegree = Map.copyOf(tablesByCycleAndDegree);
     rulesByTable = Map.copyOf(rulesByTable);
     sources = Map.copyOf(sources);
+    degreesWithCompleteSubjects = Set.copyOf(degreesWithCompleteSubjects);
   }
 
   static String tableKey(String cycleId, String degreeId) {
@@ -69,6 +72,14 @@ public record PublishedDataset(
   /** La tabla de un ciclo frente a un grado; vacío = sin datos. */
   public Optional<TableData> table(String cycleId, String degreeId) {
     return Optional.ofNullable(tablesByCycleAndDegree.get(tableKey(cycleId, degreeId)));
+  }
+
+  /**
+   * true si el dataset trae todas las asignaturas del grado; false si solo trae las que aparecen en
+   * las tablas de reconocimiento (subjects_complete de degrees.csv).
+   */
+  public boolean subjectsComplete(String degreeId) {
+    return degreesWithCompleteSubjects.contains(degreeId);
   }
 
   public List<RuleData> rules(String tableId) {

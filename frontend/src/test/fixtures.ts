@@ -78,6 +78,7 @@ const base: Simulation = {
   degreeTotalEcts: 240,
   pendingEcts: 223.5,
   recognizedPercentage: 6.88,
+  subjectsComplete: true,
   remainingByYear: [
     {
       courseYear: 1,

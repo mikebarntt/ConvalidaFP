@@ -111,7 +111,8 @@ class DatasetSnapshotReader {
               "center", d.getCenter(),
               "total_ects", d.getTotalEcts(),
               "plan_code", d.getPlanCode(),
-              "url", d.getUrl()));
+              "url", d.getUrl(),
+              "subjects_complete", d.isSubjectsComplete()));
     }
     for (DegreeSubject s : subjects.findByDatasetVersionIdOrderByCode(versionId)) {
       snapshot.put(

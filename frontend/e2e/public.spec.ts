@@ -150,6 +150,16 @@ test.describe('flujo principal: simulación y resultado', () => {
     await expect(page.getByTestId('ects-reconocidos')).toHaveText('22,5')
     await expect(page.getByTestId('condicionado')).toContainText('condición no especificada en el documento')
     await expect(page.getByTestId('optativos')).toContainText('4,5 ECTS')
+
+    // subjects_complete = false: sin lista de restantes; ECTS pendientes y enlace a la web del grado.
+    await expect(page.getByTestId('restantes-curso')).toHaveCount(0)
+    const plan = page.getByTestId('plan-incompleto')
+    await expect(plan).toContainText('Te quedan 217,5 ECTS por cursar')
+    await expect(plan.getByRole('link', { name: 'la web de la universidad' })).toHaveAttribute(
+      'href',
+      'https://uej.example/sur/grados/prueba',
+    )
+    await expectAccessible(page)
   })
 
   test('errores en español: grado inexistente y resultado sin elegir', async ({ page }) => {

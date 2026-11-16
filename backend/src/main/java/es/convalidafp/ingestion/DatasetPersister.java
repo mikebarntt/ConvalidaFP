@@ -104,7 +104,8 @@ class DatasetPersister {
               text(r, "center"),
               decimal(r, "total_ects"),
               text(r, "plan_code"),
-              text(r, "url"));
+              text(r, "url"),
+              "true".equals(r.get("subjects_complete")));
       em.persist(degree);
       degrees.put(degree.getCode(), degree);
     }

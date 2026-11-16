@@ -53,6 +53,7 @@ En 2025-26, T-EJ-01 solo tiene las reglas R-001 a R-006 y suma 30.
 | Regla sin módulos (reconocimiento por tener el título) | R-052: 3 créditos optativos. Genera un **aviso** |
 | Regla condicionada sin condición en el documento | R-054: `condition_text` vacío. Genera un **aviso** |
 | Celda vacía = desconocido | El grado UFI-GS tiene ECTS y curso vacíos y una lista de asignaturas incompleta |
+| Lista de asignaturas completa o parcial (`subjects_complete`) | `true` en UEJ-GP, UEJ-DG y UPR-GD (los dos cursos): se muestran las asignaturas restantes. `false` en UEJ-GP-SUR: CF-EJ × UEJ-GP-SUR muestra solo los ECTS pendientes y el enlace a la web del grado. Vacío (= `false`) en UFI-GS, que no tiene `url` |
 
 El dataset 2026-27 no tiene errores y produce exactamente esos dos avisos; el 2025-26, ninguno.
 

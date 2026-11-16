@@ -14,6 +14,7 @@ import es.convalidafp.catalog.DatasetPublicationService;
 import es.convalidafp.catalog.DatasetVersion;
 import es.convalidafp.catalog.DatasetVersion.Status;
 import es.convalidafp.catalog.DatasetVersionRepository;
+import es.convalidafp.catalog.DegreeRepository;
 import es.convalidafp.catalog.DegreeSubjectRepository;
 import es.convalidafp.catalog.UniversityRepository;
 import es.convalidafp.ingestion.DatasetDiff.FieldChange;
@@ -49,6 +50,7 @@ class DatasetImportIntegrationTest {
   @Autowired private DatasetPublicationService publication;
   @Autowired private DatasetVersionRepository versions;
   @Autowired private UniversityRepository universities;
+  @Autowired private DegreeRepository degrees;
   @Autowired private DegreeSubjectRepository subjects;
   @Autowired private RecognitionTableRepository tables;
   @Autowired private RecognitionRuleRepository rules;
@@ -81,6 +83,38 @@ class DatasetImportIntegrationTest {
         .isEqualTo("S-EJ-04");
     // Importar no publica: sigue sin haber curso vigente.
     assertThat(versions.findFirstByStatusOrderByAcademicYearDesc(Status.PUBLICADO)).isEmpty();
+  }
+
+  @Test
+  @DisplayName("subjects_complete se guarda: true, false y vacío = false")
+  void subjectsCompleteIsStored() {
+    Long id = importer.importDataset(SampleFiles.of("2026-27").build()).datasetVersionId();
+
+    assertThat(degrees.findByDatasetVersionIdAndCode(id, "UEJ-GP").orElseThrow().isSubjectsComplete()).isTrue();
+    assertThat(degrees.findByDatasetVersionIdAndCode(id, "UEJ-GP-SUR").orElseThrow().isSubjectsComplete()).isFalse();
+    assertThat(degrees.findByDatasetVersionIdAndCode(id, "UFI-GS").orElseThrow().isSubjectsComplete()).isFalse();
+  }
+
+  @Test
+  @DisplayName("Cambiar subjects_complete aparece en las diferencias; vacío y false son lo mismo")
+  void subjectsCompleteChangeIsADifference() {
+    importAndPublish(SampleFiles.of("2026-27"));
+
+    ImportResult changed =
+        importer.importDataset(
+            SampleFiles.of("2026-27").replace(DEGREES, "/sur/grados/prueba,false", "/sur/grados/prueba,true").build());
+    assertThat(changed.diff().file(DEGREES).changed())
+        .singleElement()
+        .satisfies(
+            c -> {
+              assertThat(c.id()).isEqualTo("UEJ-GP-SUR");
+              assertThat(c.fields()).containsExactly(new FieldChange("subjects_complete", "false", "true"));
+            });
+
+    ImportResult same =
+        importer.importDataset(
+            SampleFiles.of("2026-27").replace(DEGREES, "/sur/grados/prueba,false", "/sur/grados/prueba,").build());
+    assertThat(same.diff().file(DEGREES).isEmpty()).isTrue();
   }
 
   @Test

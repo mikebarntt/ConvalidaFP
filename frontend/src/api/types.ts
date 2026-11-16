@@ -131,6 +131,8 @@ export interface Simulation {
   degreeTotalEcts: number | null
   pendingEcts: number | null
   recognizedPercentage: number | null
+  /** false: el dataset solo trae las asignaturas de las tablas de reconocimiento y remainingByYear va vacío. */
+  subjectsComplete: boolean
   remainingByYear: RemainingYear[]
   noAgreement: NoAgreement | null
 }

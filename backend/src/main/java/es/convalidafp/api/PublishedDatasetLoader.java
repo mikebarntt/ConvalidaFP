@@ -29,8 +29,10 @@ import es.convalidafp.simulation.SourceRef;
 import es.convalidafp.simulation.TableData;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,6 +134,7 @@ public class PublishedDatasetLoader {
 
     List<DegreeDto> degreeDtos = new ArrayList<>();
     Map<String, DegreeData> degreeData = new HashMap<>();
+    Set<String> degreesWithCompleteSubjects = new HashSet<>();
     for (Degree d : degrees.findByDatasetVersionIdOrderByCode(versionId)) {
       degreeDtos.add(
           new DegreeDto(
@@ -150,6 +153,9 @@ public class PublishedDatasetLoader {
           new DegreeData(
               d.getCode(), d.getName(), plain(d.getTotalEcts()), subjectData.getOrDefault(d.getCode(), List.of())));
       subjectDtos.putIfAbsent(d.getCode(), List.of());
+      if (d.isSubjectsComplete()) {
+        degreesWithCompleteSubjects.add(d.getCode());
+      }
     }
 
     Map<String, SourceDto> sourceDtos = new HashMap<>();
@@ -206,7 +212,8 @@ public class PublishedDatasetLoader {
         degreeData,
         tableData,
         ruleData.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> List.copyOf(e.getValue()))),
-        sourceDtos);
+        sourceDtos,
+        degreesWithCompleteSubjects);
   }
 
   private static SourceRef sourceRef(SourceDocument source) {

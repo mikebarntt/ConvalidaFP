@@ -196,6 +196,18 @@ class SampleDatasetContractTest {
   }
 
   @Test
+  @DisplayName("subjects_complete: hay grados con la lista completa y grados con la lista parcial")
+  void subjectsCompleteHasBothValues() {
+    List<String> values =
+        current.rows("degrees.csv").stream().map(r -> r.get("subjects_complete")).toList();
+    assertThat(values).allMatch(v -> v.isEmpty() || v.equals("true") || v.equals("false"));
+    assertThat(values).contains("true", "false", "");
+    assertThat(row(current, "degrees.csv", "degree_id", "UEJ-GP").get("subjects_complete")).isEqualTo("true");
+    assertThat(row(current, "degrees.csv", "degree_id", "UEJ-GP-SUR").get("subjects_complete")).isEqualTo("false");
+    assertThat(row(previous, "degrees.csv", "degree_id", "UEJ-GP").get("subjects_complete")).isEqualTo("true");
+  }
+
+  @Test
   @DisplayName("Caso 13: ECTS con decimales")
   void case13DecimalEcts() {
     assertThat(ruleSum("T-EJ-01")).isEqualByComparingTo("51");

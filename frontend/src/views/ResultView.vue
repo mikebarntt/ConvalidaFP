@@ -222,7 +222,7 @@ const remainingCount = computed(
             </ul>
           </section>
 
-          <section class="mt-8" aria-labelledby="restantes">
+          <section v-if="result.subjectsComplete" class="mt-8" aria-labelledby="restantes">
             <h2 id="restantes" class="text-xl font-bold">Asignaturas restantes</h2>
             <p class="mt-1 text-sm text-muted">
               {{ remainingCount }} asignaturas del grado que no aparecen en la tabla de reconocimiento.
@@ -255,6 +255,18 @@ const remainingCount = computed(
                 </li>
               </ul>
             </details>
+          </section>
+          <!-- El dataset solo trae las asignaturas de las tablas de reconocimiento: no hay lista de restantes. -->
+          <section v-else class="mt-8" data-testid="plan-incompleto">
+            <p>
+              Te quedan <strong class="tabular">{{ formatEcts(result.pendingEcts) }}</strong> por cursar. Consulta el
+              plan de estudios completo
+              <template v-if="result.degree.url">
+                en
+                <a :href="result.degree.url" target="_blank" rel="noopener noreferrer">la web de la universidad</a>.
+              </template>
+              <template v-else>en la web de la universidad.</template>
+            </p>
           </section>
         </template>
 

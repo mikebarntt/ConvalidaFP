@@ -235,6 +235,15 @@ class DatasetValidatorTest {
     assertError(validate(small().replace(TABLES, ",VIGENTE,", ",ACTIVA,")), "F5", TABLES, 2, "status");
     assertError(validate(small().replace(RULES, ",SUBJECT,", ",ASIGNATURA,")), "F5", RULES, 2, "target_type");
     assertError(validate(small().replace(RULES, ",false,", ",no,")), "F5", RULES, 2, "is_conditional");
+    assertError(validate(small().replace(DEGREES, "/prueba,true", "/prueba,TRUE")), "F5", DEGREES, 2, "subjects_complete");
+    assertError(validate(small().replace(DEGREES, "/prueba,true", "/prueba,si")), "F5", DEGREES, 2, "subjects_complete");
+  }
+
+  @Test
+  @DisplayName("subjects_complete es opcional: true, false o vacío (= false)")
+  void subjectsCompleteIsOptional() {
+    assertThat(validate(small().replace(DEGREES, "/prueba,true", "/prueba,false")).errors()).isEmpty();
+    assertThat(validate(small().replace(DEGREES, "/prueba,true", "/prueba,")).errors()).isEmpty();
   }
 
   @Test
