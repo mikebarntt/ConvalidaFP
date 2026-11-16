@@ -1,0 +1,16 @@
+{
+  "academic_year": "2026-27",
+  "date": "2026-11-16",
+  "reviewer": "Equipo ConvalidaFP",
+  "files": [
+    { "name": "universities.csv", "sha256": "f4fea2856bd7e51c2c35fb236a3f9ea1be354ac4d9a3b196867834b7c3f54cd0" },
+    { "name": "fp_cycles.csv", "sha256": "125bdc24f2b7afc2b9ab540d183177b263726c095dfb563a9ca67c359b88465c" },
+    { "name": "fp_modules.csv", "sha256": "0f8af6510415f3fb77375509ceac7521a772434e83b3f8febf99d8cbd6e05538" },
+    { "name": "degrees.csv", "sha256": "19710dc208727ed03120f1919252fffd96b6e1e8f10686fc30256f70cfb12b48" },
+    { "name": "degree_subjects.csv", "sha256": "05c32e6840d2f8311bd2c394b6c42f21da85799b77ee99975ad2e833a2cc71e9" },
+    { "name": "source_documents.csv", "sha256": "9d40d85cadccca5be80eb64760c8838b190f6df057fab955ff636261e14d7007" },
+    { "name": "recognition_tables.csv", "sha256": "31ccd5c0164f27cf6fa57d51c0871c3fe1590e9d54ff41842cf5d2c9953c9e07" },
+    { "name": "recognition_rules.csv", "sha256": "2d87ebc10c383ee84e5f927815fab30009618d5a117008827aee33b9276f7f0e" },
+    { "name": "rule_requirements.csv", "sha256": "0eb304025680a6e287a5176b74e71016e8dee9fae08728d211ba2457dd167c67" }
+  ]
+}

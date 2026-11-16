@@ -1,0 +1,23 @@
+degree_id,university_id,name,degree_type,center,total_ects,plan_code,url,subjects_complete
+UPM-GII,UPM,Grado en Ingeniería Informática,SIMPLE,,240,,https://www.upm.es/Estudiantes/Estudios_Titulaciones/EstudiosOficialesGrado/ArticulosRelacionados?prefmt=articulo&fmt=detail&id=CON09071,false
+UPM-GIS,UPM,Grado en Ingeniería del Software,SIMPLE,,240,,https://www.upm.es/gsfs/SFS31899,false
+UPM-GIC,UPM,Grado en Ingeniería de Computadores,SIMPLE,,240,,https://computadores.etsisi.upm.es/transparencia-8/,false
+UPM-GSI,UPM,Grado en Sistemas de Información,SIMPLE,,240,,https://si.etsisi.upm.es/plan-de-estudios/,false
+UPM-GIT,UPM,Grado en Ingeniería Telemática,SIMPLE,,240,59TL,https://www.etsist.upm.es/estudios-ingenieria-sistemas-telecomunicaciones-madrid/grados-ingenieria-Madrid/telematica/plan-de-estudios.html,false
+UPM-GCDIA,UPM,Grado en Ciencia de Datos e Inteligencia Artificial,SIMPLE,Campus Sur,240,,https://cdia.etsisi.upm.es/plan-de-estudios/,false
+URJC-GII,URJC,Grado en Ingeniería Informática,SIMPLE,,240,,https://www.urjc.es/grado/628-ingenieria-informatica,false
+URJC-GIS,URJC,Grado en Ingeniería del Software,SIMPLE,,240,,https://www.urjc.es/grado/640-ingenieria-software,false
+URJC-GIC,URJC,Grado en Ingeniería de Computadores,SIMPLE,,240,,https://www.urjc.es/grado/647-ingenieria-de-computadores,false
+URJC-GIT,URJC,Grado en Ingeniería Telemática,SIMPLE,,240,,https://www.urjc.es/grado/634-ingenieria-telematica,false
+URJC-GCID,URJC,Grado en Ciencia e Ingeniería de Datos,SIMPLE,,240,,https://www.urjc.es/grado/7087-ciencia-e-ingenieria-de-datos,false
+UC3M-GII,UC3M,Grado en Ingeniería Informática,SIMPLE,,240,,https://www.uc3m.es/grado/informatica,false
+UAM-GII,UAM,Grado en Ingeniería Informática,SIMPLE,,240,772 / 773,https://www.uam.es/uam/media/doc/1606943990163/grado-ingenieria-informatica-2024-25-definitivo.pdf,false
+UAH-GII,UAH,Grado en Ingeniería Informática,SIMPLE,Escuela Politécnica Superior,240,G781,https://www.uah.es/es/estudios/estudios-oficiales/grados/Grado-en-Ingenieria-Informatica/,false
+UAH-GISI,UAH,Grado en Ingeniería en Sistemas de Información,SIMPLE,Escuela Politécnica Superior,240,G581,https://www.uah.es/es/estudios/estudios-oficiales/grados/Grado-en-Ingenieria-en-Sistemas-de-Informacion/,false
+UAH-GIC,UAH,Grado en Ingeniería de Computadores,SIMPLE,Escuela Politécnica Superior,240,G591,https://www.uah.es/es/estudios/estudios-oficiales/grados/Grado-en-Ingenieria-de-Computadores/,false
+UAH-GIT,UAH,Grado en Ingeniería Telemática,SIMPLE,Escuela Politécnica Superior,240,G380,https://www.uah.es/es/estudios/estudios-oficiales/grados/Grado-en-Ingenieria-Telematica/,false
+UCM-GII,UCM,Grado en Ingeniería Informática,SIMPLE,Facultad de Informática,240,080E,https://ssii.ucm.es/estudios/2026-27/grado-ingenieriainformatica-estudios-estructura,false
+UCM-GIS,UCM,Grado en Ingeniería del Software,SIMPLE,Facultad de Informática,240,080G,https://informatica.ucm.es/estudios/grado-ingenieriadelsoftware-estudios-estructura,false
+UCM-GIC,UCM,Grado en Ingeniería de Computadores,SIMPLE,Facultad de Informática,240,080F,https://informatica.ucm.es/estudios/grado-ingenieriadecomputadores-plan,false
+UCM-DGIIM,UCM,Doble Grado en Ingeniería Informática y Matemáticas,DOBLE,,375,DT32,https://www.ucm.es/estudios/grado-ingenieriainformaticaymatematicas-estudios-estructura,false
+UCM-DGADEII,UCM,Doble Grado en Administración y Dirección de Empresas e Ingeniería Informática,DOBLE,,390,DT31,https://www.ucm.es/estudios/grado-adeinginformatica-estudios-estructura,false

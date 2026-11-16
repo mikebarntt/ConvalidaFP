@@ -1,0 +1,24 @@
+table_id,cycle_id,degree_id,academic_year,status,source_id,table_max_ects,notes
+T-DAW-UPM-GII,CF-DAW,UPM-GII,2026-27,VIGENTE,S-UPM-CUADROS,,
+T-DAW-UPM-GIS,CF-DAW,UPM-GIS,2026-27,VIGENTE,S-UPM-CUADROS,,En el documento figura como Grado en Ingeniería del Software - Plan 2014. ECTS de Prácticas en Empresa derivados del total del documento menos las asignaturas con ECTS fijos
+T-DAW-UPM-GIC,CF-DAW,UPM-GIC,2026-27,VIGENTE,S-UPM-CUADROS,,En el documento figura como Grado en Ingeniería de Computadores - Plan 2014. ECTS de Prácticas en Empresa derivados del total del documento menos las asignaturas con ECTS fijos
+T-DAW-UPM-GSI,CF-DAW,UPM-GSI,2026-27,VIGENTE,S-UPM-CUADROS,,ECTS de Prácticas en Empresa derivados del total del documento menos las asignaturas con ECTS fijos
+T-DAW-UPM-GIT,CF-DAW,UPM-GIT,2026-27,VIGENTE,S-UPM-GIT,,
+T-DAW-2024-UPM-GIT,CF-DAW-2024,UPM-GIT,2026-27,VIGENTE,S-UPM-GIT,,Título LOE modificado por Decreto 103/2024
+T-DAW-UPM-GCDIA,CF-DAW,UPM-GCDIA,2026-27,VIGENTE,S-UPM-CUADROS,,En el documento figura como Grado en Ciencia de Datos e Inteligencia Artificial (Campus Sur)
+T-DAW-URJC-GII,CF-DAW,URJC-GII,2026-27,VIGENTE,S-URJC-GII,,
+T-DAW-URJC-GIS,CF-DAW,URJC-GIS,2026-27,VIGENTE,S-URJC-GIS,,
+T-DAW-URJC-GIC,CF-DAW,URJC-GIC,2026-27,VIGENTE,S-URJC-GIC,,
+T-DAW-URJC-GIT,CF-DAW,URJC-GIT,2026-27,VIGENTE,S-URJC-GIT,,
+T-DAW-URJC-GCID,CF-DAW,URJC-GCID,2026-27,VIGENTE,S-URJC-GCID,,
+T-DAW-UC3M-GII,CF-DAW,UC3M-GII,2026-27,VIGENTE,S-UC3M-GII,,
+T-DAW-UAM-GII,CF-DAW,UAM-GII,2026-27,VIGENTE,S-UAM-GII,,Planes 772 y 773
+T-DAW-UAH-GII,CF-DAW,UAH-GII,2026-27,VIGENTE,S-UAH-EPS,,Plan G781
+T-DAW-UAH-GISI,CF-DAW,UAH-GISI,2026-27,VIGENTE,S-UAH-EPS,,Plan G581
+T-DAW-UAH-GIC,CF-DAW,UAH-GIC,2026-27,VIGENTE,S-UAH-EPS,,Plan G591
+T-DAW-UAH-GIT,CF-DAW,UAH-GIT,2026-27,VIGENTE,S-UAH-EPS,,Plan G380
+T-DAW-UCM-GII,CF-DAW,UCM-GII,2026-27,VIGENTE,S-UCM-ANEXO-2024,,"Plan 080E. Módulos de Aplicaciones Web tomados del documento específico de DT31, misma fila del anexo"
+T-DAW-UCM-GIS,CF-DAW,UCM-GIS,2026-27,VIGENTE,S-UCM-ANEXO-2024,,"Plan 080G. Módulos de Aplicaciones Web tomados del documento específico de DT31, misma fila del anexo"
+T-DAW-UCM-GIC,CF-DAW,UCM-GIC,2026-27,VIGENTE,S-UCM-ANEXO-2024,,Plan 080F
+T-DAW-UCM-DGIIM,CF-DAW,UCM-DGIIM,2026-27,VIGENTE,S-UCM-DGIIM,,Plan DT32
+T-DAW-UCM-DGADEII,CF-DAW,UCM-DGADEII,2026-27,VIGENTE,S-UCM-DGADEII,,Plan DT31
